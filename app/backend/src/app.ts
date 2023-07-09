@@ -1,5 +1,6 @@
-import 'express-async-errors'
 import express from 'express'
+
+import 'express-async-errors'
 
 class App {
   public app: express.Express
