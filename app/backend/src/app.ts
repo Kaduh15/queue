@@ -2,6 +2,7 @@ import express from 'express'
 
 import 'express-async-errors'
 
+import bodyValidation from './middlewares/body-validation.middleware'
 import errorMiddleware from './middlewares/error.middleware'
 
 class App {
@@ -30,10 +31,6 @@ class App {
   }
 
   private routes(): void {
-    this.app.use('/', (req, res) => {
-      res.send('API is running')
-    })
-
     this.app.use(errorMiddleware)
   }
 
