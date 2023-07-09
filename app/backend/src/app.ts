@@ -1,6 +1,7 @@
 import express from 'express'
 
 import 'express-async-errors'
+import errorMiddleware from './middlewares/error.middleware'
 
 class App {
   public app: express.Express
@@ -31,6 +32,8 @@ class App {
     this.app.use('/', (req, res) => {
       res.send('API is running')
     })
+
+    this.app.use(errorMiddleware)
   }
 
   public start(PORT: string | number): void {
