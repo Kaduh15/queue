@@ -3,7 +3,7 @@ import jwt, { Secret } from 'jsonwebtoken'
 
 dotenv.config()
 
-export class auth {
+export class Auth {
   private static readonly secret = process.env.JWT_SECRET as Secret
   private static readonly expiresIn = process.env.JWT_EXPIRES_IN as string
   private static jwt = jwt
