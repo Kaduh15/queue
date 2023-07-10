@@ -1,11 +1,11 @@
 import { Router } from 'express'
 
-import { UserController } from '@/controllers'
 import bodyValidation from '@/middlewares/body-validation.middleware'
 import prisma from '@/prisma/prisma-client'
-import { UserService } from '@/services/user.service'
 
 import { createUserSchema } from './schemas/user-create.schema'
+import { UserController } from './user.controller'
+import { UserService } from './user.service'
 
 const userService = new UserService(prisma)
 

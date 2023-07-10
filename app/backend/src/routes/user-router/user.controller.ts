@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import { UserService } from '@/services'
+import { UserService } from './user.service'
 
 type RequestFunction = (req: Request, res: Response) => Promise<Response>
 
