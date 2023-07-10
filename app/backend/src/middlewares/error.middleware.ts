@@ -1,11 +1,18 @@
 import { HttpError } from '@/utils/http-errors'
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
-export default function errorMiddleware(
-  err: HttpError,
-  req: Request,
-  res: Response,
+function errorMiddleware(
+  error: HttpError,
+  _request: Request,
+  response: Response,
+  _next: NextFunction,
 ) {
-  const status = err.status || 500
-  res.status(status).send(err.message)
+  const status = error.status || 500
+  const message = error.message || 'Something went wrong'
+
+  response.status(status).send({
+    message,
+  })
 }
+
+export default errorMiddleware
