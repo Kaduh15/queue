@@ -1,4 +1,4 @@
-import prisma from "./prisma-client"
+import prisma from './prisma-client'
 
 async function main() {
   const admin = await prisma.user.upsert({
@@ -9,7 +9,6 @@ async function main() {
       name: 'Admin',
       password: 'admin',
       role: 'ADMIN',
-      
     },
   })
   console.log({ admin })

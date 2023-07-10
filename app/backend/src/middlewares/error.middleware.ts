@@ -1,5 +1,6 @@
-import { HttpError } from '@/utils/http-errors'
 import { NextFunction, Request, Response } from 'express'
+
+import { HttpError } from '@/utils/http-errors'
 
 function errorMiddleware(
   error: HttpError,

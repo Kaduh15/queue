@@ -2,8 +2,8 @@ import express from 'express'
 
 import 'express-async-errors'
 
-import bodyValidation from './middlewares/body-validation.middleware'
 import errorMiddleware from './middlewares/error.middleware'
+import { usersRouter } from './routes'
 
 class App {
   public app: express.Express
@@ -31,6 +31,12 @@ class App {
   }
 
   private routes(): void {
+    this.app.get('/', (_req, res) => {
+      res.status(200).json({ Hello: 'world!' })
+    })
+
+    this.app.use('/user', usersRouter)
+
     this.app.use(errorMiddleware)
   }
 

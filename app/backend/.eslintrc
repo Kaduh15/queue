@@ -11,12 +11,10 @@
         "newlinesBetween": "always",
         "groups": [
           "module",
-          "/^@shared/",
-          [
-            "parent",
+          "/^@//",
+          "parent",
             "sibling",
             "index"
-          ]
         ],
         "alphabetize": {
           "order": "asc",
