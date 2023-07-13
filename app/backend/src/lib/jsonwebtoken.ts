@@ -1,4 +1,3 @@
-import { Payload } from '@prisma/client/runtime/library'
 import dotenv from 'dotenv'
 import jwt, { JwtPayload, Secret } from 'jsonwebtoken'
 
