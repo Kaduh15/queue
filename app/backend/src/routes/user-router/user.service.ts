@@ -30,6 +30,12 @@ export class UserService {
         password: hashedPassword,
         role: data.role,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+      },
     })
 
     return user
