@@ -1,17 +1,19 @@
 import { NextFunction } from 'express'
 
 import { Auth } from '@/lib/jsonwebtoken'
-import { HttpError } from '@/utils/http-errors'
+import { NotFoundError, UnauthorizedError } from '@/utils/http-errors'
 
-export default function authMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  const token = req.headers.get('Authorization')?.split(' ')[1]
-  if (!token) throw new HttpError('token not found', 404)
+export default function authMiddleware(role?: string) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.get('Authorization')?.split(' ').at(-1)
+    if (!token) throw new NotFoundError('token not found')
 
-  Auth.verify(token)
+    const payload = Auth.verify(token)
 
-  return next()
+    if (role && payload.role !== role) {
+      throw new UnauthorizedError('unauthorized')
+    }
+
+    return next()
+  }
 }
