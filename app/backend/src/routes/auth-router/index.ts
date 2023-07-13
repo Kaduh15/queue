@@ -1,6 +1,5 @@
 import { Router } from 'express'
 
-import { Auth } from '@/lib/jsonwebtoken'
 import bodyValidation from '@/middlewares/body-validation.middleware'
 import prisma from '@/prisma/prisma-client'
 
