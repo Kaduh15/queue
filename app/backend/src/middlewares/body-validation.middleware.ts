@@ -16,6 +16,8 @@ export default function bodyValidationMiddleware(schema: ZodType) {
 
       return res.status(400).json({ errors })
     }
+
+    req.body = validation.data
     return next()
   }
 }
