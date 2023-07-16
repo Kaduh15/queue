@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 
 import { HttpError } from '@/utils/http-errors'
 
-function errorMiddleware(
+export default function errorMiddleware(
   error: HttpError,
   _request: Request,
   response: Response,
@@ -15,5 +15,3 @@ function errorMiddleware(
     message,
   })
 }
-
-export default errorMiddleware

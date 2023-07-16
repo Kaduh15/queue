@@ -4,7 +4,7 @@
     "eslint-plugin-import-helpers"
   ],
   "rules": {
-    "@typescript-eslint/no-unused-vars" : "off",
+    "@typescript-eslint/no-unused-vars": "off",
     "import-helpers/order-imports": [
       "warn",
       { // example configuration
@@ -13,8 +13,8 @@
           "module",
           "/^@//",
           "parent",
-            "sibling",
-            "index"
+          "sibling",
+          "index"
         ],
         "alphabetize": {
           "order": "asc",

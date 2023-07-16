@@ -17,6 +17,11 @@ model User {
   role      Role     @default(USER)
 }
 
+model Open {
+  id       Int      @id @default(autoincrement())
+  isOpen  Boolean  @default(false)
+}
+
 enum Role {
   USER
   ADMIN

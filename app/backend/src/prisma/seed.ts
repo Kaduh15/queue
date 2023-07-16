@@ -1,3 +1,5 @@
+import { Encrypt } from '@/lib/bcryptjs'
+
 import prisma from './prisma-client'
 
 async function main() {
@@ -7,7 +9,7 @@ async function main() {
     create: {
       email: 'admin@admin.com',
       name: 'Admin',
-      password: 'admin',
+      password: await Encrypt.hash('admin'),
       role: 'ADMIN',
     },
   })

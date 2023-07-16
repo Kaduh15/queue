@@ -1,10 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 
+import { Encrypt } from '@/lib/bcryptjs'
 import { CreateUserSchema } from '@/routes/user-router/schemas/user-create.schema'
 import { ConflictError } from '@/utils/http-errors'
 
 export class UserService {
   private service: PrismaClient
+  private encrypt = Encrypt
 
   constructor(service: PrismaClient) {
     this.service = service
@@ -19,7 +21,22 @@ export class UserService {
       throw new ConflictError('User already exists')
     }
 
-    const user = await this.service.user.create({ data })
+    const hashedPassword = await this.encrypt.hash(data.password)
+
+    const user = await this.service.user.create({
+      data: {
+        email: data.email,
+        name: data.name,
+        password: hashedPassword,
+        role: data.role,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+      },
+    })
 
     return user
   }
