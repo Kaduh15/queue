@@ -17,23 +17,24 @@ describe('User', async () => {
   })
   describe('POST /user', () => {
     it('Should create an user', async () => {
-      prisma.user.create = sinon.stub().resolves({
-        id: 1,
+      const userInput = {
         name: 'Any Name',
         email: 'any@email.com',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        role: 'USER',
         password: 'any_password',
-      })
+      }
 
-      const { status, body } = await request(app).post('/user').send({
-        name: 'Any Name',
-        email: 'any@email.com',
-        password: 'any_password',
-      })
+      const { password, ...userOutput } = {
+        id: 1,
+        ...userInput,
+        role: 'USER',
+      }
+
+      prisma.user.create = sinon.stub().resolves(userOutput)
+
+      const { status, body } = await request(app).post('/user').send(userInput)
 
       expect(status).to.be.equal(StatusCodes.CREATED)
+      expect(body).to.be.deep.equal(userOutput)
     })
   })
 })
