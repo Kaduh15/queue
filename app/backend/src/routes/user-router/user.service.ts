@@ -5,15 +5,15 @@ import { CreateUserSchema } from '@/routes/user-router/schemas/user-create.schem
 import { ConflictError } from '@/utils/http-errors'
 
 export class UserService {
-  private service: PrismaClient
+  private model: PrismaClient
   private encrypt = Encrypt
 
   constructor(service: PrismaClient) {
-    this.service = service
+    this.model = service
   }
 
   async create(data: CreateUserSchema) {
-    const hasUser = await this.service.user.findUnique({
+    const hasUser = await this.model.user.findUnique({
       where: { email: data.email },
     })
 
@@ -23,7 +23,7 @@ export class UserService {
 
     const hashedPassword = await this.encrypt.hash(data.password)
 
-    const user = await this.service.user.create({
+    const user = await this.model.user.create({
       data: {
         email: data.email,
         name: data.name,
@@ -39,5 +39,18 @@ export class UserService {
     })
 
     return user
+  }
+
+  async getAll() {
+    const users = await this.model.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+      },
+    })
+
+    return users
   }
 }
