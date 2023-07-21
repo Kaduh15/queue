@@ -16,4 +16,9 @@ export class UserController {
     const user = await this.service.create({ email, name, password, role })
     return res.status(StatusCodes.CREATED).json(user)
   }
+
+  getAll: HandlerFunction = async (req, res) => {
+    const users = await this.service.getAll()
+    return res.status(StatusCodes.OK).json(users)
+  }
 }
