@@ -37,4 +37,22 @@ describe('User', async () => {
       expect(body).to.be.deep.equal(userOutput)
     })
   })
+  describe('GET /user', () => {
+    it('Should get all users', async () => {
+      const users = [
+        {
+          id: 1,
+          name: 'Any Name',
+          email: 'any@email.com',
+        },
+      ]
+
+      prisma.user.findMany = sinon.stub().resolves(users)
+
+      const { status, body } = await request(app).get('/user')
+
+      expect(status).to.be.equal(StatusCodes.OK)
+      expect(body).to.be.deep.equal(users)
+    })
+  })
 })
