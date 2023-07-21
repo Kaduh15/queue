@@ -11,8 +11,9 @@ const userService = new UserService(prisma)
 
 const userController = new UserController(userService)
 
-const usersRouter = Router()
+const userRouter = Router()
 
-usersRouter.post('/', bodyValidation(createUserSchema), userController.create)
+userRouter.get('/', userController.getAll)
+userRouter.post('/', bodyValidation(createUserSchema), userController.create)
 
-export { usersRouter }
+export { userRouter as usersRouter }
