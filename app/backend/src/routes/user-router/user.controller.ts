@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes'
+
 import { HandlerFunction } from '@/types/handler-function'
 
 import { UserService } from './user.service'
@@ -12,6 +14,6 @@ export class UserController {
   create: HandlerFunction = async (req, res) => {
     const { email, name, password, role } = req.body
     const user = await this.service.create({ email, name, password, role })
-    return res.json(user)
+    return res.status(StatusCodes.CREATED).json(user)
   }
 }
