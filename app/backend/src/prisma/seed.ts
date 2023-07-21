@@ -13,7 +13,15 @@ async function main() {
       role: 'ADMIN',
     },
   })
-  console.log({ admin })
+
+  const open = await prisma.open.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      isOpen: false,
+    },
+  })
+  console.log({ admin, open })
 }
 main()
   .then(async () => {
