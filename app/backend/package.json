@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsup src --dts --out-dir dist",
+    "build": "tsup",
     "dev": "tsx watch src/server.ts",
     "start": "node .",
     "lint": "eslint --ext .ts src/ --fix",
