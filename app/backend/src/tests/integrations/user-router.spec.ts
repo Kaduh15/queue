@@ -2,7 +2,7 @@ import chai from 'chai'
 import chaiHttp from 'chai-http'
 import { StatusCodes } from 'http-status-codes'
 import sinon from 'sinon'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 
 import { app } from '@/app'
 import prisma from '@/prisma/prisma-client'
@@ -23,7 +23,7 @@ describe('User', async () => {
         password: 'any_password',
       }
 
-      const { password, ...userOutput } = {
+      const { password: _, ...userOutput } = {
         id: 1,
         ...userInput,
         role: 'USER',
