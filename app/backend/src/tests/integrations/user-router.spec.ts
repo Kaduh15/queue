@@ -29,6 +29,7 @@ describe('User', async () => {
         role: 'USER',
       }
 
+      prisma.user.findUnique = sinon.stub().resolves(null)
       prisma.user.create = sinon.stub().resolves(userOutput)
 
       const { status, body } = await request(app).post('/user').send(userInput)
@@ -44,6 +45,7 @@ describe('User', async () => {
           id: 1,
           name: 'Any Name',
           email: 'any@email.com',
+          role: 'USER',
         },
       ]
 
