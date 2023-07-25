@@ -22,7 +22,7 @@ export class UserPrismaRepository implements UserRepository {
         email: data.email,
         name: data.name,
         password: data.password,
-        role: data.role && data.role,
+        role: data.role,
       },
     })
 
