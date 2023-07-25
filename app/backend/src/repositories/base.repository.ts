@@ -6,7 +6,7 @@ export interface BaseRepository<T = object & BaseEntity> {
   create(data: Omit<T, 'id'>): Promise<T>
   getAll(): Promise<T[]>
   getById(id: Id): Promise<T | undefined>
-  update(id: Id, data: T): Promise<T>
+  update(id: Id, data: Partial<T>): Promise<T>
   delete(id: Id): Promise<void>
   deleteAll(): Promise<void>
 }
