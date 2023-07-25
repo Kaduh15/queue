@@ -58,5 +58,22 @@ describe('UserService', () => {
 
       expect(user).to.be.deep.equal(userOutput)
     })
+
+    it('should throw an error if email is already in use', async () => {
+      const userInput: CreateUserSchema = {
+        email: 'any_email',
+        name: 'any name',
+        password: 'any password',
+        role: 'USER',
+      }
+
+      await userService.create({
+        ...userInput,
+      })
+
+      await expect(userService.create(userInput)).rejects.toThrow(
+        'User already exists',
+      )
+    })
   })
 })
