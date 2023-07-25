@@ -53,8 +53,20 @@ export class UserRepositoryInMemory implements UserRepository {
     return Promise.resolve(user)
   }
 
-  update(_id: number, _data: User): Promise<User> {
-    throw new Error('Method not implemented.')
+  update(id: number, data: Partial<User>): Promise<User> {
+    const user = this.users.find((user) => user.id === id)
+
+    if (!user) {
+      return Promise.reject(NotFoundError)
+    }
+    user.email = data.email || user.email
+    user.name = data.name || user.name
+    user.password = data.password || user.password
+    user.role = data.role || user.role
+
+    user.updatedAt = new Date()
+
+    return Promise.resolve(new User(user))
   }
 
   delete(id: number): Promise<void> {
