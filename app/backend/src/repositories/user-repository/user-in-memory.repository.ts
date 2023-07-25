@@ -13,8 +13,13 @@ export class UserRepositoryInMemory implements UserRepository {
     return Promise.resolve(user)
   }
 
-  create(data: Omit<User, 'id'>): Promise<User> {
-    const hasEmail = this.users.find((user) => user.email === data.email)
+  create({
+    email,
+    name,
+    password,
+    role = 'USER',
+  }: Omit<User, 'id'>): Promise<User> {
+    const hasEmail = this.users.find((user) => user.email === email)
 
     if (hasEmail) {
       throw new ConflictError('Email already in use')
@@ -24,10 +29,10 @@ export class UserRepositoryInMemory implements UserRepository {
 
     const user = new User({
       id: this.index + 1,
-      email: data.email,
-      name: data.name,
-      password: data.password,
-      role: data.role,
+      email,
+      name,
+      password,
+      role,
       createdAt: date,
       updatedAt: date,
     })
