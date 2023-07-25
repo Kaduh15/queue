@@ -1,12 +1,15 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-import prisma from '@/prisma/prisma-client'
+import User from '@/entities/user.entity'
+import { UserRepositoryInMemory } from '@/repositories/user-repository/user-in-memory.repository'
 
 import { CreateUserSchema } from './schemas/user-create.schema'
 import { UserService } from './user.service'
 
 describe('UserService', () => {
-  const userService = new UserService(prisma)
+  const userRepository = new UserRepositoryInMemory()
+
+  const userService = new UserService(userRepository)
 
   it('should be defined', () => {
     expect(userService).toBeDefined()
@@ -17,6 +20,14 @@ describe('UserService', () => {
   })
 
   describe('create', async () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
     it('should create a user with success', async () => {
       const userInput: CreateUserSchema = {
         email: 'any@email.com',
@@ -25,15 +36,16 @@ describe('UserService', () => {
         role: 'USER',
       }
 
-      const userOutput = {
-        id: 'any id',
+      vi.setSystemTime(new Date('2021-01-01T00:00:00.000Z'))
+
+      const userOutput: Omit<User, 'password'> = {
+        id: 1,
         email: userInput.email,
         name: userInput.name,
         role: userInput.role,
+        createdAt: new Date('2021-01-01T00:00:00.000Z'),
+        updatedAt: new Date('2021-01-01T00:00:00.000Z'),
       }
-
-      prisma.user.findUnique = vi.fn().mockResolvedValue(null)
-      prisma.user.create = vi.fn().mockResolvedValue(userOutput)
 
       const user = await userService.create(userInput)
 
