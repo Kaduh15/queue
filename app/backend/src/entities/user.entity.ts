@@ -17,6 +17,6 @@ export default class User extends BaseEntity {
     this.email = email
     this.name = name
     this.password = password
-    this.role = role || 'USER'
+    this.role = role ?? 'USER'
   }
 }

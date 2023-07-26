@@ -59,10 +59,10 @@ export class UserRepositoryInMemory implements UserRepository {
     if (!user) {
       return Promise.reject(NotFoundError)
     }
-    user.email = data.email || user.email
-    user.name = data.name || user.name
-    user.password = data.password || user.password
-    user.role = data.role || user.role
+    user.email = data.email ?? user.email
+    user.name = data.name ?? user.name
+    user.password = data.password ?? user.password
+    user.role = data.role ?? user.role
 
     user.updatedAt = new Date()
 
