@@ -1,13 +1,14 @@
 import { Router } from 'express'
 
 import bodyValidation from '@/middlewares/body-validation.middleware'
-import prisma from '@/prisma/prisma-client'
+import { UserPrismaRepository } from '@/repositories/user-repository/user-prisma.repository'
 
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { authLoginSchema } from './schemas/auth-login.schema'
 
-const authService = new AuthService({ prisma })
+const userRepository = new UserPrismaRepository()
+const authService = new AuthService(userRepository)
 const authController = new AuthController(authService)
 
 const authRouter = Router()
