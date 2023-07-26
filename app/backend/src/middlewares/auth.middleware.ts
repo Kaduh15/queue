@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 
+import { Role } from '@/entities/user.entity'
 import { Auth } from '@/lib/jsonwebtoken'
 import { NotFoundError, UnauthorizedError } from '@/utils/http-errors'
-
-type Role = 'ADMIN' | 'USER'
 
 type AuthPayload = {
   role: Role

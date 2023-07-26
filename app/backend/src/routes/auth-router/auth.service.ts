@@ -1,32 +1,26 @@
-import { PrismaClient } from '@prisma/client'
-
+import { Encrypt } from '@/lib/bcryptjs'
 import { Auth } from '@/lib/jsonwebtoken'
+import { UserRepository } from '@/repositories/user-repository/user.repository'
 import { NotFoundError, UnauthorizedError } from '@/utils/http-errors'
 
 import { AuthLoginSchema } from './schemas/auth-login.schema'
 
-type AuthServiceProps = {
-  prisma: PrismaClient
-}
-
 export class AuthService {
   private auth = Auth
-  private prisma: PrismaClient
+  private model: UserRepository
 
-  constructor({ prisma }: AuthServiceProps) {
-    this.prisma = prisma
+  constructor(model: UserRepository) {
+    this.model = model
   }
 
   async login(data: AuthLoginSchema) {
-    const user = await this.prisma.user.findUnique({
-      where: { email: data.email },
-    })
+    const user = await this.model.findByEmail(data.email)
 
     if (!user) {
       throw new NotFoundError('User not found')
     }
 
-    const isPasswordValid = data.password === user.password
+    const isPasswordValid = Encrypt.compare(data.password, user.password)
 
     if (!isPasswordValid) {
       throw new UnauthorizedError('Invalid password')

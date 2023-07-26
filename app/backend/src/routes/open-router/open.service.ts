@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import { get } from 'http'
 
 type OpenServiceProps = {
   prisma: PrismaClient
