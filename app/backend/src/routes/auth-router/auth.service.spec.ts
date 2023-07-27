@@ -46,5 +46,14 @@ describe('AuthService', () => {
 
       expect(token).to.be.deep.equal({ token: 'token' })
     })
+
+    it('should throw an error if email is not found', async () => {
+      const promise = authService.login({
+        email: 'any_email_invalid',
+        password: 'any_password',
+      })
+
+      await expect(promise).rejects.toThrowError(NotFoundError)
+    })
   })
 })
