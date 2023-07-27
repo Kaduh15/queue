@@ -25,7 +25,7 @@ describe('AuthService', () => {
       vi.fn().mockClear()
     })
 
-    it('should return token', async () => {
+    it('should return a token if email and password are correct', async () => {
       const loginInput: AuthLoginSchema = {
         email: 'any_email',
         password: 'any_password',
