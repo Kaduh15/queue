@@ -14,7 +14,7 @@ export class AuthService {
   }
 
   async login(data: AuthLoginSchema) {
-    const user = await this.model.findByEmail(data.email)
+    const user = await this.model.getByEmail(data.email)
 
     if (!user) {
       throw new NotFoundError('User not found')
