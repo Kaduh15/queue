@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { Encrypt } from '@/lib/bcryptjs'
 import { Auth } from '@/lib/jsonwebtoken'
 import { UserRepositoryInMemory } from '@/repositories/user-repository/user-in-memory.repository'
+import { NotFoundError } from '@/utils/http-errors'
 
 import { AuthService } from './auth.service'
 import { AuthLoginSchema } from './schemas/auth-login.schema'
