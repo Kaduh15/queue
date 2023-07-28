@@ -25,7 +25,7 @@ model Open {
 model queue {
   id        Int      @id @default(autoincrement())
   name      String
-  phone     String
+  phoneNumber     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

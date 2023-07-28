@@ -27,7 +27,7 @@ services:
       - db
     environment:
       - APP_PORT=3001
-      - DATABASE_URL=postgres://root:root@db:5432/queue_dev
+      - DATABASE_URL=postgres://root:root@db:5432/queue-dev
       - JWT_SECRET="SENHACECRETA"
     healthcheck:
       test: ["CMD", "lsof", "-t", "-i:3001"] # Caso utilize outra porta interna para o back, altere ela aqui também
@@ -45,7 +45,7 @@ services:
     depends_on:
       - backend
     environment:
-      - DATABASE_URL=postgres://root:root@db:5432/queue_dev
+      - DATABASE_URL=postgres://root:root@db:5432/queue-dev
     healthcheck:
       test: ["CMD", "lsof", "-t", "-i:5555"] # Caso utilize outra porta interna para o back, altere ela aqui também
       timeout: 10s
