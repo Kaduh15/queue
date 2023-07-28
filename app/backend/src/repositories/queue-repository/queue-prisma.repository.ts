@@ -18,7 +18,9 @@ export class QueuePrismaRepository implements QueueRepository {
     return queueToday.map((queue) => new Queue(queue))
   }
 
-  async create(data: Omit<Queue, 'id'>): Promise<Queue> {
+  async create(
+    data: Omit<Queue, 'id' | 'status' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Queue> {
     const hasQueue = await prisma.queue.findFirst({
       where: {
         name: data.name,
