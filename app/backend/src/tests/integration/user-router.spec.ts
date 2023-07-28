@@ -6,16 +6,18 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import { app } from '@/app'
 import prisma from '@/prisma/prisma-client'
+import { userRepository } from '@/routes'
 
 chai.use(chaiHttp)
 
 const { request } = chai
 
 describe('User', async () => {
-  afterEach(async () => {
-    sinon.restore()
-  })
   describe('POST /user', () => {
+    afterEach(async () => {
+      sinon.restore()
+    })
+
     it('Should create an user', async () => {
       const userInput = {
         name: 'Any Name',
@@ -29,8 +31,8 @@ describe('User', async () => {
         role: 'USER',
       }
 
-      prisma.user.findUnique = sinon.stub().resolves(null)
-      prisma.user.create = sinon.stub().resolves(userOutput)
+      userRepository.getByEmail = sinon.stub().resolves(null)
+      userRepository.create = sinon.stub().resolves(userOutput)
 
       const { status, body } = await request(app).post('/user').send(userInput)
 
