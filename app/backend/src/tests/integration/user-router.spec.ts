@@ -5,7 +5,6 @@ import sinon from 'sinon'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { app } from '@/app'
-import prisma from '@/prisma/prisma-client'
 import { userRepository } from '@/routes'
 
 chai.use(chaiHttp)
@@ -51,7 +50,7 @@ describe('User', async () => {
         },
       ]
 
-      prisma.user.findMany = sinon.stub().resolves(users)
+      userRepository.getAll = sinon.stub().resolves(users)
 
       const { status, body } = await request(app).get('/user')
 
