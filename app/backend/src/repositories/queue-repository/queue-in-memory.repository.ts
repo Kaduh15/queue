@@ -31,6 +31,8 @@ export class QueueRepositoryInMemory implements QueueRepository {
       updatedAt: nowDate,
     })
 
+    this.queues.push(newQueue)
+
     return Promise.resolve(newQueue)
   }
 
