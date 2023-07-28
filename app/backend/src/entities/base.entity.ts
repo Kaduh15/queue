@@ -8,8 +8,8 @@ interface IBaseEntity {
 
 export class BaseEntity implements IBaseEntity {
   id: Id
-  createdAt?: Date
-  updatedAt?: Date
+  createdAt: Date
+  updatedAt: Date
 
   constructor(data: BaseEntity) {
     this.id = data.id
