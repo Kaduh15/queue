@@ -49,7 +49,7 @@ describe('User', async () => {
         },
       ]
 
-      userRepository.getAll = sinon.stub().resolves(users)
+      userRepository.getAll = vi.fn().mockResolvedValue(users)
 
       const { status, body } = await request(app).get('/user')
 
