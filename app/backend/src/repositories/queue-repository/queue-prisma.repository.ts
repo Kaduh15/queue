@@ -1,10 +1,15 @@
 import Queue from '@/entities/queue.entity'
+import prisma from '@/prisma/prisma-client'
 
 import { QueueRepository } from './queue.repository'
 
 export class QueuePrismaRepository implements QueueRepository {
-  create(_data: Omit<Queue, 'id'>): Promise<Queue> {
-    throw new Error('Method not implemented.')
+  async create(data: Omit<Queue, 'id'>): Promise<Queue> {
+    const queue = await prisma.queue.create({
+      data,
+    })
+
+    return new Queue(queue)
   }
 
   getAll(): Promise<Queue[]> {
