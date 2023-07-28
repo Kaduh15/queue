@@ -18,4 +18,4 @@ const userRouter = Router()
 userRouter.get('/', userController.getAll)
 userRouter.post('/', bodyValidation(createUserSchema), userController.create)
 
-export { userRouter as usersRouter }
+export { userRouter }

@@ -3,9 +3,7 @@ import express from 'express'
 import 'express-async-errors'
 
 import errorMiddleware from './middlewares/error.middleware'
-import { usersRouter } from './routes'
-import { authRouter } from './routes/auth-router'
-import { queueRouter } from './routes/queue-router'
+import { authRouter, queueRouter, userRouter } from './routes'
 
 class App {
   public app: express.Express
@@ -37,7 +35,7 @@ class App {
       res.status(200).json({ Hello: 'world!' })
     })
 
-    this.app.use('/user', usersRouter)
+    this.app.use('/user', userRouter)
     this.app.use('/login', authRouter)
     this.app.use('/queue', queueRouter)
 
