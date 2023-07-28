@@ -9,8 +9,8 @@ export class QueuePrismaRepository implements QueueRepository {
     const queueToday = await prisma.queue.findMany({
       where: {
         createdAt: {
-          gte: new Date().setHours(0, 0, 0, 0).toLocaleString(),
-          lte: new Date().setHours(23, 59, 59, 999).toLocaleString(),
+          gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          lte: new Date(new Date().setHours(23, 59, 59, 999)),
         },
       },
     })
