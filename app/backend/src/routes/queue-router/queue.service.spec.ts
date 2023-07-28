@@ -47,6 +47,7 @@ describe('QueueService', () => {
         ...queueInput,
         createdAt: new Date(),
         updatedAt: new Date(),
+        status: 'WAITING',
       }
 
       const queue = await queueService.create(queueInput)
