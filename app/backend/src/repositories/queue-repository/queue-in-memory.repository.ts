@@ -3,8 +3,8 @@ import Queue from '@/entities/queue.entity'
 import { QueueRepository } from './queue.repository'
 
 export class QueueRepositoryInMemory implements QueueRepository {
-  queues: Queue[] = []
-  index = 0
+  private queues: Queue[] = []
+  private index = 1
 
   getToday(): Promise<Queue[]> {
     const queueToday = this.queues.filter((queue) => {
@@ -26,12 +26,14 @@ export class QueueRepositoryInMemory implements QueueRepository {
 
     const newQueue = new Queue({
       ...data,
-      id: this.index + 1,
+      id: this.index,
       createdAt: nowDate,
       updatedAt: nowDate,
     })
 
     this.queues.push(newQueue)
+
+    this.index++
 
     return Promise.resolve(newQueue)
   }
@@ -53,6 +55,8 @@ export class QueueRepositoryInMemory implements QueueRepository {
   }
 
   deleteAll(): Promise<void> {
-    throw new Error('Method not implemented.')
+    this.queues = []
+
+    return Promise.resolve()
   }
 }
