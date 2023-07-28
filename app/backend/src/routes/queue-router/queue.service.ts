@@ -9,6 +9,12 @@ export class QueueService {
     this.model = model
   }
 
+  async getToday() {
+    const queues = await this.model.getToday()
+
+    return queues
+  }
+
   async create(data: CreateQueueSchema) {
     return await this.model.create(data)
   }
