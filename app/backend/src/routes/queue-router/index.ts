@@ -16,5 +16,6 @@ const queueController = new QueueController(queueService)
 const queueRouter = Router()
 
 queueRouter.post('/', bodyValidation(createQueueSchema), queueController.create)
+queueRouter.get('/', queueController.getToday)
 
 export { queueRouter }
