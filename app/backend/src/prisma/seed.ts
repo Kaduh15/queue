@@ -9,7 +9,7 @@ async function main() {
     create: {
       email: 'admin@admin.com',
       name: 'Admin',
-      password: await Encrypt.hash('admin'),
+      password: await Encrypt.hash('@admin'),
       role: 'ADMIN',
     },
   })
