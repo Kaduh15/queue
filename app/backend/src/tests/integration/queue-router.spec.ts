@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { app } from '@/app'
 import Queue from '@/entities/queue.entity'
+import { Auth } from '@/lib/jsonwebtoken'
 import { queueRepository } from '@/routes'
 import { CreateQueueSchema } from '@/routes/queue-router/schemas/queue-create.schema'
 
@@ -21,7 +22,7 @@ describe('Queue', async () => {
     it('Should create an queue', async () => {
       const queueInput: CreateQueueSchema = {
         name: 'Any Name',
-        phoneNumber: '123456789',
+        phoneNumber: '12345678910',
       }
 
       vi.setSystemTime(new Date('2021-01-01T00:00:00.000Z'))
@@ -38,8 +39,13 @@ describe('Queue', async () => {
 
       queueRepository.create = vi.fn().mockResolvedValue(queueOutput)
 
+      Auth.verify = vi.fn().mockReturnValue({
+        role: 'ADMIN',
+      })
+
       const { status, body } = await request(app)
         .post('/queue')
+        .set('Authorization', 'Bearer token')
         .send(queueInput)
 
       expect(status).to.be.equal(StatusCodes.CREATED)
