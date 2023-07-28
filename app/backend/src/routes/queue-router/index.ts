@@ -7,7 +7,7 @@ import { QueueController } from './queue.controller'
 import { QueueService } from './queue.service'
 import { createQueueSchema } from './schemas/queue-create.schema'
 
-const queueRepository = new QueuePrismaRepository()
+export const queueRepository = new QueuePrismaRepository()
 
 const queueService = new QueueService(queueRepository)
 
@@ -16,6 +16,6 @@ const queueController = new QueueController(queueService)
 const queueRouter = Router()
 
 queueRouter.post('/', bodyValidation(createQueueSchema), queueController.create)
-queueRouter.get('/', queueController.getToday)
+queueRouter.get('/today', queueController.getToday)
 
 export { queueRouter }
