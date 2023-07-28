@@ -1,8 +1,7 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import { StatusCodes } from 'http-status-codes'
-import sinon from 'sinon'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { app } from '@/app'
 import { userRepository } from '@/routes'
@@ -14,7 +13,7 @@ const { request } = chai
 describe('User', async () => {
   describe('POST /user', () => {
     afterEach(async () => {
-      sinon.restore()
+      vi.resetAllMocks()
     })
 
     it('Should create an user', async () => {
@@ -30,8 +29,8 @@ describe('User', async () => {
         role: 'USER',
       }
 
-      userRepository.getByEmail = sinon.stub().resolves(null)
-      userRepository.create = sinon.stub().resolves(userOutput)
+      userRepository.getByEmail = vi.fn().mockResolvedValue(null)
+      userRepository.create = vi.fn().mockResolvedValue(userOutput)
 
       const { status, body } = await request(app).post('/user').send(userInput)
 
