@@ -29,6 +29,7 @@ export class QueueRepositoryInMemory implements QueueRepository {
       id: this.index,
       createdAt: nowDate,
       updatedAt: nowDate,
+      status: 'WAITING',
     })
 
     this.queues.push(newQueue)
