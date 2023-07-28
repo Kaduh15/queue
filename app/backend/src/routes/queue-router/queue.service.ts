@@ -16,6 +16,8 @@ export class QueueService {
   }
 
   async create(data: CreateQueueSchema) {
-    return await this.model.create(data)
+    const customer = await this.model.create(data)
+
+    return customer
   }
 }
