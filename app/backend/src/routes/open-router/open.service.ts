@@ -1,48 +1,44 @@
-import { PrismaClient } from '@prisma/client'
-
-type OpenServiceProps = {
-  prisma: PrismaClient
-}
+import { OpenRepository } from '@/repositories/open-repository/open.repository'
 
 export class OpenService {
-  private prisma: PrismaClient
+  private model: OpenRepository
 
-  constructor({ prisma }: OpenServiceProps) {
-    this.prisma = prisma
+  constructor(model: OpenRepository) {
+    this.model = model
   }
 
   async create() {
-    const isOpen = await this.prisma.open.create({
-      data: { isOpen: false },
+    const isOpen = await this.model.create({
+      isOpen: false,
     })
 
     return { isOpen }
   }
 
   async toggle() {
-    const isOpen = await this.prisma.open.findUnique({ where: { id: 1 } })
+    const isOpen = await this.model.getById(1)
 
     if (!isOpen) {
-      const createOpen = await this.prisma.open.create({
-        data: { isOpen: false },
+      const createOpen = await this.model.create({
+        isOpen: false,
       })
+
       return { isOpen: createOpen }
     }
 
-    const updatedOpen = await this.prisma.open.update({
-      where: { id: 1 },
-      data: { isOpen: !isOpen.isOpen },
+    const updatedOpen = await this.model.update(1, {
+      isOpen: !isOpen.isOpen,
     })
 
     return { isOpen: updatedOpen }
   }
 
   async get() {
-    const isOpen = await this.prisma.open.findUnique({ where: { id: 1 } })
+    const isOpen = await this.model.getById(1)
 
     if (!isOpen) {
-      const createOpen = await this.prisma.open.create({
-        data: { isOpen: false },
+      const createOpen = await this.model.create({
+        isOpen: false,
       })
       return { isOpen: createOpen }
     }
