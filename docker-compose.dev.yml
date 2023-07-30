@@ -14,13 +14,14 @@ services:
   #     test: ["CMD", "lsof", "-t", "-i:3000"]  # Caso utilize outra porta interna para o front, altere ela aqui também
   #     timeout: 10s
   #     retries: 5
+
   backend:
     container_name: app_backend
     build: ./app/backend
     ports:
       - 3001:3001
     working_dir: /app-backend
-    command: sh -c "npm run db:migrate && npm run dev"
+    command: sh -c "npm run db:migrate && npm run db:generate && npm run dev"
     volumes: 
       - ./app/backend/src:/app-backend/src
     depends_on:
@@ -35,6 +36,7 @@ services:
       retries: 5
     networks:
       - app-network
+
   db-studio:
     container_name: app_db-studio
     build: ./app/backend
@@ -52,6 +54,7 @@ services:
       retries: 5
     networks:
       - app-network
+
   db:
     image: postgres:latest
     container_name: db
