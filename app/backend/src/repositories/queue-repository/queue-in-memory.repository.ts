@@ -1,4 +1,5 @@
 import Queue from '@/entities/queue.entity'
+import { NotFoundError } from '@/utils/http-errors'
 
 import { QueueRepository } from './queue.repository'
 
@@ -40,19 +41,40 @@ export class QueueRepositoryInMemory implements QueueRepository {
   }
 
   getAll(): Promise<Queue[]> {
-    throw new Error('Method not implemented.')
+    return Promise.resolve(this.queues)
   }
 
-  getById(_id: number): Promise<Queue | undefined> {
-    throw new Error('Method not implemented.')
+  getById(id: number): Promise<Queue | undefined> {
+    const queue = this.queues.find((queue) => queue.id === id)
+
+    return Promise.resolve(queue)
   }
 
-  update(_id: number, _data: Partial<Queue>): Promise<Queue> {
-    throw new Error('Method not implemented.')
+  update(id: number, data: Partial<Queue>): Promise<Queue> {
+    const queue = this.queues.find((queue) => queue.id === id)
+
+    if (!queue) {
+      return Promise.reject(new NotFoundError('Queue not found'))
+    }
+
+    queue.name = data.name ?? queue.name
+    queue.phoneNumber = data.phoneNumber ?? queue.phoneNumber
+    queue.status = data.status ?? queue.status
+    queue.updatedAt = new Date()
+
+    return Promise.resolve(queue)
   }
 
-  delete(_id: number): Promise<void> {
-    throw new Error('Method not implemented.')
+  delete(id: number): Promise<void> {
+    const index = this.queues.findIndex((queue) => queue.id === id)
+
+    if (index === -1) {
+      return Promise.reject(new NotFoundError('Queue not found'))
+    }
+
+    this.queues.splice(index, 1)
+
+    return Promise.resolve()
   }
 
   deleteAll(): Promise<void> {
