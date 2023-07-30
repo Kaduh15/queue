@@ -2,10 +2,10 @@ import { BaseEntity } from './base.entity'
 
 export type Status = 'WAITING' | 'ABSENT' | 'DONE'
 
-export default class Queue extends BaseEntity {
+export default class Open extends BaseEntity {
   isOpen: boolean
 
-  constructor({ id, createdAt, updatedAt, isOpen }: Queue) {
+  constructor({ id, createdAt, updatedAt, isOpen }: Open) {
     super({
       id,
       createdAt,
