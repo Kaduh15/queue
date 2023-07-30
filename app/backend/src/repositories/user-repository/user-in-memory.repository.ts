@@ -7,7 +7,7 @@ export class UserRepositoryInMemory implements UserRepository {
   users: User[] = []
   index = 0
 
-  findByEmail(email: string): Promise<User | undefined> {
+  getByEmail(email: string): Promise<User | undefined> {
     const user = this.users.find((user) => user.email === email)
 
     return Promise.resolve(user)

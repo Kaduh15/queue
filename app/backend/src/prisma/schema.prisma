@@ -18,8 +18,25 @@ model User {
 }
 
 model Open {
-  id       Int      @id @default(autoincrement())
-  isOpen  Boolean  @default(false)
+  id        Int      @id @default(autoincrement())
+  isOpen    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model queue {
+  id          Int      @id @default(autoincrement())
+  name        String
+  phoneNumber String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  status      Status   @default(WAITING)
+}
+
+enum Status {
+  WAITING
+  ABSENT
+  DONE
 }
 
 enum Role {

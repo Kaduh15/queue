@@ -4,7 +4,7 @@ import prisma from '@/prisma/prisma-client'
 import { UserRepository } from './user.repository'
 
 export class UserPrismaRepository implements UserRepository {
-  async findByEmail(email: string): Promise<User | undefined> {
+  async getByEmail(email: string): Promise<User | undefined> {
     const user = await prisma.user.findUnique({
       where: { email },
     })

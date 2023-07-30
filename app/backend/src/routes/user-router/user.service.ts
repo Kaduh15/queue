@@ -12,7 +12,7 @@ export class UserService {
   }
 
   async create(data: CreateUserSchema) {
-    const hasUser = await this.model.findByEmail(data.email)
+    const hasUser = await this.model.getByEmail(data.email)
 
     if (hasUser) {
       throw new ConflictError('User already exists')

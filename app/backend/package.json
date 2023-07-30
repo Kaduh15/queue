@@ -12,7 +12,7 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
-    "test": "vitest",
+    "test": "vitest dev",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage"
   },

@@ -7,7 +7,7 @@ import { createUserSchema } from './schemas/user-create.schema'
 import { UserController } from './user.controller'
 import { UserService } from './user.service'
 
-const userRepository = new UserPrismaRepository()
+export const userRepository = new UserPrismaRepository()
 
 const userService = new UserService(userRepository)
 
@@ -18,4 +18,4 @@ const userRouter = Router()
 userRouter.get('/', userController.getAll)
 userRouter.post('/', bodyValidation(createUserSchema), userController.create)
 
-export { userRouter as usersRouter }
+export { userRouter }

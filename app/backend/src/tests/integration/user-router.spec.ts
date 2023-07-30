@@ -1,21 +1,21 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import { StatusCodes } from 'http-status-codes'
-import sinon from 'sinon'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { app } from '@/app'
-import prisma from '@/prisma/prisma-client'
+import { userRepository } from '@/routes'
 
 chai.use(chaiHttp)
 
 const { request } = chai
 
 describe('User', async () => {
-  afterEach(async () => {
-    sinon.restore()
-  })
   describe('POST /user', () => {
+    afterEach(async () => {
+      vi.resetAllMocks()
+    })
+
     it('Should create an user', async () => {
       const userInput = {
         name: 'Any Name',
@@ -29,8 +29,8 @@ describe('User', async () => {
         role: 'USER',
       }
 
-      prisma.user.findUnique = sinon.stub().resolves(null)
-      prisma.user.create = sinon.stub().resolves(userOutput)
+      userRepository.getByEmail = vi.fn().mockResolvedValue(null)
+      userRepository.create = vi.fn().mockResolvedValue(userOutput)
 
       const { status, body } = await request(app).post('/user').send(userInput)
 
@@ -49,7 +49,7 @@ describe('User', async () => {
         },
       ]
 
-      prisma.user.findMany = sinon.stub().resolves(users)
+      userRepository.getAll = vi.fn().mockResolvedValue(users)
 
       const { status, body } = await request(app).get('/user')
 
