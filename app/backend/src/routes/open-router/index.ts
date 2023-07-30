@@ -6,7 +6,7 @@ import { OpenPrismaRepository } from '@/repositories/open-repository/open-prisma
 import { OpenController } from './open.controller'
 import { OpenService } from './open.service'
 
-const openRepository = new OpenPrismaRepository()
+export const openRepository = new OpenPrismaRepository()
 const openService = new OpenService(openRepository)
 const openController = new OpenController(openService)
 
