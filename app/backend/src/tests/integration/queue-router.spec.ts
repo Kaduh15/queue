@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { app } from '@/app'
 import Queue from '@/entities/queue.entity'
 import { Auth } from '@/lib/jsonwebtoken'
-import { queueRepository } from '@/routes'
+import { openRepository, queueRepository } from '@/routes'
 import { CreateQueueSchema } from '@/routes/queue-router/schemas/queue-create.schema'
 
 chai.use(chaiHttp)
@@ -35,6 +35,9 @@ describe('Queue', async () => {
         updatedAt: now,
       }
 
+      openRepository.getById = vi.fn().mockResolvedValue({
+        isOpen: true,
+      })
       queueRepository.create = vi.fn().mockResolvedValue(queueOutput)
 
       Auth.verify = vi.fn().mockReturnValue({
