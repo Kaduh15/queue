@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
 import { QueueRepositoryInMemory } from '@/repositories/queue-repository/queue-in-memory.repository'
 
 import { QueueService } from './queue.service'
@@ -7,12 +8,18 @@ import { CreateQueueSchema } from './schemas/queue-create.schema'
 
 describe('QueueService', () => {
   const queueRepository = new QueueRepositoryInMemory()
+  const openRepository = new OpenRepositoryInMemory()
+  const queueService = new QueueService(queueRepository, openRepository)
 
-  const queueService = new QueueService(queueRepository)
+  openRepository.create({ isOpen: false })
 
   beforeEach(() => {
     vi.resetAllMocks()
     vi.useRealTimers()
+
+    openRepository.update(1, {
+      isOpen: false,
+    })
 
     queueRepository.deleteAll()
   })
@@ -40,6 +47,10 @@ describe('QueueService', () => {
         phoneNumber: '99999999999',
       }
 
+      openRepository.update(1, {
+        isOpen: true,
+      })
+
       vi.setSystemTime(new Date('2021-01-01T00:00:00.000Z'))
 
       const queueOutput = {
@@ -62,6 +73,10 @@ describe('QueueService', () => {
         name: 'Any Name',
         phoneNumber: '99999999999',
       }
+
+      openRepository.update(1, {
+        isOpen: true,
+      })
 
       vi.setSystemTime(new Date('2021-01-01T00:00:00.000Z'))
       await queueService.create(queueInput)
