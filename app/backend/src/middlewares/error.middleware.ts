@@ -12,6 +12,6 @@ export default function errorMiddleware(
   const message = error.message || 'Something went wrong'
 
   response.status(status).send({
-    message,
+    error: message,
   })
 }
