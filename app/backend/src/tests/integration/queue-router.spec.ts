@@ -14,6 +14,23 @@ chai.use(chaiHttp)
 const { request } = chai
 
 describe('Queue', async () => {
+  describe('GET /queue/today', () => {
+    it('should get all current day customers', async () => {
+      queueRepository.getToday = vi.fn().mockResolvedValue([
+        {
+          id: 1,
+          name: 'Any Name 1',
+          phoneNumber: '123456789',
+        },
+      ])
+
+      const { status, body } = await request(app).get('/queue/today')
+
+      expect(status).to.be.equal(StatusCodes.OK)
+      expect(body).toHaveProperty('length', 1)
+    })
+  })
+
   describe('POST /queue', () => {
     afterEach(async () => {
       vi.resetAllMocks()
@@ -58,20 +75,26 @@ describe('Queue', async () => {
     })
   })
 
-  describe('GET /queue/today', () => {
-    it('should get all current day customers', async () => {
-      queueRepository.getToday = vi.fn().mockResolvedValue([
-        {
-          id: 1,
-          name: 'Any Name 1',
-          phoneNumber: '123456789',
-        },
-      ])
+  describe('POST /queue/:id', () => {
+    it('should update status to DONE', async () => {
+      queueRepository.getById = vi.fn().mockResolvedValue({
+        status: 'WAITING',
+      })
 
-      const { status, body } = await request(app).get('/queue/today')
+      Auth.verify = vi.fn().mockReturnValue({
+        role: 'ADMIN',
+      })
 
-      expect(status).to.be.equal(StatusCodes.OK)
-      expect(body).toHaveProperty('length', 1)
+      queueRepository.update = vi.fn().mockResolvedValue({
+        status: 'DONE',
+      })
+
+      const { status, body } = await request(app)
+        .post('/queue/1?status=DONE')
+        .set('Authorization', 'Bearer token')
+
+      expect(status).toBe(200)
+      expect(body).toHaveProperty('status', 'DONE')
     })
   })
 })
