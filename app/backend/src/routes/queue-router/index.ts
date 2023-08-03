@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import authMiddleware from '@/middlewares/auth.middleware'
 import bodyValidation from '@/middlewares/body-validation.middleware'
+import queryValidationMiddleware from '@/middlewares/query-validation.middleware copy'
 import { QueuePrismaRepository } from '@/repositories/queue-repository/queue-prisma.repository'
 
 import { openRepository } from '../open-router'
@@ -9,6 +10,7 @@ import { openRepository } from '../open-router'
 import { QueueController } from './queue.controller'
 import { QueueService } from './queue.service'
 import { createQueueSchema } from './schemas/queue-create.schema'
+import { updateStatusQuerySchema } from './schemas/queue-query-update-status'
 
 export const queueRepository = new QueuePrismaRepository()
 
@@ -23,6 +25,12 @@ queueRouter.post(
   authMiddleware('ADMIN'),
   bodyValidation(createQueueSchema),
   queueController.create,
+)
+queueRouter.post(
+  '/:id',
+  authMiddleware('ADMIN'),
+  queryValidationMiddleware(updateStatusQuerySchema),
+  queueController.updateStatus,
 )
 queueRouter.get('/today', queueController.getToday)
 

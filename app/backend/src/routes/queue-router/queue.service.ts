@@ -1,6 +1,7 @@
+import { Status } from '@/entities/queue.entity'
 import { OpenRepository } from '@/repositories/open-repository/open.repository'
 import { QueueRepository } from '@/repositories/queue-repository/queue.repository'
-import { BadRequestError } from '@/utils/http-errors'
+import { BadRequestError, NotFoundError } from '@/utils/http-errors'
 
 import { CreateQueueSchema } from './schemas/queue-create.schema'
 
@@ -27,5 +28,17 @@ export class QueueService {
     const customer = await this.model.create(data)
 
     return customer
+  }
+
+  async updateStatus(id: number, status: Status) {
+    const hasCustomer = await this.model.getById(id)
+
+    if (!hasCustomer) throw new NotFoundError('customer not found')
+
+    const updateCustomer = await this.model.update(id, {
+      status,
+    })
+
+    return updateCustomer
   }
 }
