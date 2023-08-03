@@ -18,7 +18,7 @@ export class UserRepositoryInMemory implements UserRepository {
     name,
     password,
     role = 'USER',
-  }: Omit<User, 'id'>): Promise<User> {
+  }: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
     const hasEmail = this.users.find((user) => user.email === email)
 
     if (hasEmail) {
