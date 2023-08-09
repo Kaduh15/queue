@@ -40,14 +40,30 @@ type FormSchema = z.infer<typeof formSchema>
 
 function App() {
   const [customers, setCustomers] = useState<Customer[]>([])
+  const [statusRequest, setStatusRequest] = useState<boolean>(false)
 
-  const HandleSubmit = (data: FormSchema) => {
-    console.log('🚀 ~ file: App.tsx:40 ~ HandleSubmit ~ data:', data)
-    api.post('/queue', data, {
+  const handleSubmit = async (data: FormSchema) => {
+    setStatusRequest(true)
+    await api.post('/queue', data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
+    setStatusRequest(false)
+  }
+
+  const handleUpdateStatus = async (id: number, status: string) => {
+    setStatusRequest(true)
+    await api.post(
+      `/queue/${id}?status=${status}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+    setStatusRequest(false)
   }
 
   useEffect(() => {
@@ -57,17 +73,17 @@ function App() {
         return setCustomers(data.data)
       })
       .catch((error) => console.log(error))
-  }, [])
+  }, [statusRequest])
 
   return (
-    <>
+    <main className="flex flex-col h-screen p-5 items-end">
       <Dialog>
-        <DialogTrigger>Adicionar</DialogTrigger>
+        <DialogTrigger className="bg-stone-900 text-stone-100 py-1 px-4 rounded-lg">
+          Adicionar
+        </DialogTrigger>
         <DialogContent>
-          <AutoForm formSchema={formSchema} onSubmit={HandleSubmit}>
-            <AutoFormSubmit>
-              <DialogTrigger>Adicionar</DialogTrigger>
-            </AutoFormSubmit>
+          <AutoForm formSchema={formSchema} onSubmit={handleSubmit}>
+            <AutoFormSubmit>Adicionar</AutoFormSubmit>
           </AutoForm>
         </DialogContent>
       </Dialog>
@@ -86,19 +102,32 @@ function App() {
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>{customer.name}</TableCell>
                 <TableCell>{Status[customer.status]}</TableCell>
-                {(customers[index].status === 'WAITING' || index === 0) && (
+                {index === 0 && customer.status === 'WAITING' && (
                   <TableCell>
-                    <Button onClick={() => console.log('clicou')}>
+                    <Button
+                      onClick={() => handleUpdateStatus(customer.id, 'DONE')}
+                    >
                       Atender
                     </Button>
                   </TableCell>
                 )}
+                {index > 0 &&
+                  customers[index - 1].status !== 'WAITING' &&
+                  customer.status === 'WAITING' && (
+                    <TableCell>
+                      <Button
+                        onClick={() => handleUpdateStatus(customer.id, 'DONE')}
+                      >
+                        Atender
+                      </Button>
+                    </TableCell>
+                  )}
               </TableRow>
             )
           })}
         </TableBody>
       </Table>
-    </>
+    </main>
   )
 }
 
