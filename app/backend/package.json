@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsx watch src/server.ts",
-    "prestart": "npm run build",
     "start": "node .",
     "lint": "eslint --ext .ts src/ --fix",
     "db:generate": "prisma generate",
