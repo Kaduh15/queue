@@ -13,6 +13,9 @@ export class QueuePrismaRepository implements QueueRepository {
           lte: new Date(new Date().setHours(23, 59, 59, 999)),
         },
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     })
 
     return queueToday.map((queue) => new Queue(queue))
