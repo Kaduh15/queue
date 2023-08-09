@@ -38,23 +38,44 @@ export class QueuePrismaRepository implements QueueRepository {
     return new Queue(queue)
   }
 
-  getAll(): Promise<Queue[]> {
-    throw new Error('Method not implemented.')
+  async getAll(): Promise<Queue[]> {
+    const customers = await prisma.queue.findMany()
+
+    return customers.map((customer) => new Queue(customer))
   }
 
-  getById(_id: number): Promise<Queue | undefined> {
-    throw new Error('Method not implemented.')
+  async getById(id: number): Promise<Queue | undefined> {
+    const customer = await prisma.queue.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!customer) return undefined
+
+    return new Queue(customer)
   }
 
-  update(_id: number, _data: Partial<Queue>): Promise<Queue> {
-    throw new Error('Method not implemented.')
+  async update(id: number, data: Partial<Queue>): Promise<Queue> {
+    const customer = await prisma.queue.update({
+      where: {
+        id,
+      },
+      data,
+    })
+
+    return new Queue(customer)
   }
 
-  delete(_id: number): Promise<void> {
-    throw new Error('Method not implemented.')
+  async delete(id: number): Promise<void> {
+    await prisma.queue.delete({
+      where: {
+        id,
+      },
+    })
   }
 
-  deleteAll(): Promise<void> {
-    throw new Error('Method not implemented.')
+  async deleteAll(): Promise<void> {
+    await prisma.queue.deleteMany()
   }
 }

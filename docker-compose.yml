@@ -6,6 +6,7 @@ services:
     ports:
       - 3000:3000
     working_dir: /app-frontend
+    command: sh -c "npm run start"
     volumes: 
       - ./app/frontend/src:/app-frontend/src
     depends_on:
@@ -13,7 +14,6 @@ services:
         condition: service_healthy
     environment:
       - API_URL=http://backend:3001
-      - VITE_PORT=3000
     # Os `healthcheck` devem garantir que a aplicação
     # está operacional, antes de liberar o container
     healthcheck:
@@ -29,14 +29,14 @@ services:
     ports:
       - 3001:3001
     working_dir: /app-backend
-    command: sh -c "npm run db:generate && npm run db:migrate && npm run dev"
+    command: sh -c "npm run db:generate && npm run db:migrate && npm run start"
     volumes: 
       - ./app/backend/src:/app-backend/src
     depends_on:
       - db
     environment:
       - PORT=3001
-      - DATABASE_URL=postgres://root:root@db:5432/queue-dev
+      - DATABASE_URL=postgres://root:root@db:5432/queue
       - JWT_SECRET="SENHACECRETA"
       - FRONTEND_URL=http://frontend:3000
     healthcheck:
@@ -56,7 +56,7 @@ services:
     depends_on:
       - backend
     environment:
-      - DATABASE_URL=postgres://root:root@db:5432/queue-dev
+      - DATABASE_URL=postgres://root:root@db:5432/queue
     healthcheck:
       test: ["CMD", "lsof", "-t", "-i:5555"] # Caso utilize outra porta interna para o back, altere ela aqui também
       timeout: 10s

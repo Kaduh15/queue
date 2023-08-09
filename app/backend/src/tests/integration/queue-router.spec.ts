@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { app } from '@/app'
 import Queue from '@/entities/queue.entity'
 import { Auth } from '@/lib/jsonwebtoken'
-import { queueRepository } from '@/routes'
+import { openRepository, queueRepository } from '@/routes'
 import { CreateQueueSchema } from '@/routes/queue-router/schemas/queue-create.schema'
 
 chai.use(chaiHttp)
@@ -14,6 +14,23 @@ chai.use(chaiHttp)
 const { request } = chai
 
 describe('Queue', async () => {
+  describe('GET /queue/today', () => {
+    it('should get all current day customers', async () => {
+      queueRepository.getToday = vi.fn().mockResolvedValue([
+        {
+          id: 1,
+          name: 'Any Name 1',
+          phoneNumber: '123456789',
+        },
+      ])
+
+      const { status, body } = await request(app).get('/queue/today')
+
+      expect(status).to.be.equal(StatusCodes.OK)
+      expect(body).toHaveProperty('length', 1)
+    })
+  })
+
   describe('POST /queue', () => {
     afterEach(async () => {
       vi.resetAllMocks()
@@ -25,8 +42,6 @@ describe('Queue', async () => {
         phoneNumber: '12345678910',
       }
 
-      vi.setSystemTime(new Date('2021-01-01T00:00:00.000Z'))
-
       const now = new Date()
 
       const queueOutput: Queue = {
@@ -37,6 +52,9 @@ describe('Queue', async () => {
         updatedAt: now,
       }
 
+      openRepository.getById = vi.fn().mockResolvedValue({
+        isOpen: true,
+      })
       queueRepository.create = vi.fn().mockResolvedValue(queueOutput)
 
       Auth.verify = vi.fn().mockReturnValue({
@@ -57,20 +75,26 @@ describe('Queue', async () => {
     })
   })
 
-  describe('GET /queue/today', () => {
-    it('should get all current day customers', async () => {
-      queueRepository.getToday = vi.fn().mockResolvedValue([
-        {
-          id: 1,
-          name: 'Any Name 1',
-          phoneNumber: '123456789',
-        },
-      ])
+  describe('POST /queue/:id', () => {
+    it('should update status to DONE', async () => {
+      queueRepository.getById = vi.fn().mockResolvedValue({
+        status: 'WAITING',
+      })
 
-      const { status, body } = await request(app).get('/queue/today')
+      Auth.verify = vi.fn().mockReturnValue({
+        role: 'ADMIN',
+      })
 
-      expect(status).to.be.equal(StatusCodes.OK)
-      expect(body).toHaveProperty('length', 1)
+      queueRepository.update = vi.fn().mockResolvedValue({
+        status: 'DONE',
+      })
+
+      const { status, body } = await request(app)
+        .post('/queue/1?status=DONE')
+        .set('Authorization', 'Bearer token')
+
+      expect(status).toBe(200)
+      expect(body).toHaveProperty('status', 'DONE')
     })
   })
 })

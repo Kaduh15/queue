@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
+import { Status } from '@/entities/queue.entity'
+
 import { QueueService } from './queue.service'
 
 export class QueueController {
@@ -20,5 +22,18 @@ export class QueueController {
     const customersToday = await this.service.getToday()
 
     return res.status(StatusCodes.OK).json(customersToday)
+  }
+
+  updateStatus = async (req: Request, res: Response) => {
+    const { query, params } = req
+
+    const { status } = query
+
+    const customerUpdate = await this.service.updateStatus(
+      Number(params.id),
+      status as Status,
+    )
+
+    res.status(StatusCodes.OK).json(customerUpdate)
   }
 }
