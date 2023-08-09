@@ -26,11 +26,7 @@ class App {
       ),
     )
 
-    this.app.use(
-      cors({
-        origin: process.env.FRONTEND_URL,
-      }),
-    )
+    this.app.use(cors())
     this.app.use(express.json())
   }
 
