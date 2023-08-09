@@ -21,14 +21,17 @@ class App {
 
   private config(): void {
     this.app.use(
+      morgan(
+        ':method :url :status :res[content-length] - :response-time ms | :remote-addr',
+      ),
+    )
+
+    this.app.use(
       cors({
         origin: process.env.FRONTEND_URL,
       }),
     )
     this.app.use(express.json())
-    this.app.use(
-      morgan(':method :url :status :res[content-length] - :response-time ms'),
-    )
   }
 
   private routes(): void {
