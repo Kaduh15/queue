@@ -17,6 +17,15 @@ export default ({ mode }) => {
     },
     server: {
       port: Number(process.env.VITE_PORT) || undefined,
+      host: Boolean(process.env.VITE_HOST) || undefined,
+      proxy: {
+        '/api': {
+          target: process.env.VITE_API_URL,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace('/api', ''),
+        },
+      },
     },
   })
 }
