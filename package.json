@@ -1,0 +1,19 @@
+{
+  "name": "queue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compose:dev:up": "docker-compose -f docker-compose.dev.yml up -d --build",
+    "compose:dev:down": "docker-compose -f docker-compose.dev.yml down",
+    "db:docker:up": "docker run -d --name db-pg -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -p 5432:5432 postgres:latest",
+    "start:back:dev": "cd back && npm start",
+    "start:back": "cd back && npm start",
+    "start:front:dev": "cd front && npm start",
+    "start:front": "cd front && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

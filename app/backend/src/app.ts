@@ -1,5 +1,6 @@
 import cors from 'cors'
 import express from 'express'
+import morgan from 'morgan'
 
 import 'express-async-errors'
 
@@ -25,6 +26,9 @@ class App {
       }),
     )
     this.app.use(express.json())
+    this.app.use(
+      morgan(':method :url :status :res[content-length] - :response-time ms'),
+    )
   }
 
   private routes(): void {
