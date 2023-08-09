@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import AutoForm, { AutoFormSubmit } from './components/ui/auto-form'
 import { Button } from './components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card'
 import { Dialog, DialogContent, DialogTrigger } from './components/ui/dialog'
 import {
   Table,
@@ -42,6 +43,10 @@ function App() {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [statusRequest, setStatusRequest] = useState<boolean>(false)
 
+  const nextCustomer = customers.find(
+    (customer) => customer.status === 'WAITING',
+  )
+
   const handleSubmit = async (data: FormSchema) => {
     setStatusRequest(true)
     await api.post('/queue', data, {
@@ -76,9 +81,9 @@ function App() {
   }, [statusRequest])
 
   return (
-    <main className="flex flex-col h-screen p-5 items-end">
+    <main className="flex flex-col h-screen p-5 items-center gap-4">
       <Dialog>
-        <DialogTrigger className="bg-stone-900 text-stone-100 py-1 px-4 rounded-lg">
+        <DialogTrigger className="bg-stone-900 text-stone-100 py-1 px-4 rounded-lg self-end">
           Adicionar
         </DialogTrigger>
         <DialogContent>
@@ -87,6 +92,18 @@ function App() {
           </AutoForm>
         </DialogContent>
       </Dialog>
+
+      {nextCustomer && (
+        <Card className="flex justify-center items-center p-4 gap-3">
+          <CardHeader className="p-0">
+            <CardTitle>Proximo:</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <p> {nextCustomer.name}</p>
+          </CardContent>
+        </Card>
+      )}
+
       <Table>
         <TableHeader>
           <TableRow>
