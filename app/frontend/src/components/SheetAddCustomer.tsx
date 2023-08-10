@@ -2,6 +2,8 @@ import AutoForm, { AutoFormSubmit } from '@/components/ui/auto-form'
 import * as Sheet from '@/components/ui/sheet'
 import { z } from 'zod'
 
+import { Button } from './ui/button'
+
 const formSchema = z.object({
   name: z.string().nonempty(),
   phoneNumber: z.string().optional(),
@@ -17,8 +19,8 @@ export default function SheetAddCustomer({ onSubmit }: SheetAddCustomerProps) {
   return (
     <>
       <Sheet.Sheet>
-        <Sheet.SheetTrigger className="bg-stone-900 text-stone-100 py-1 px-4 rounded-lg self-end">
-          Adicionar
+        <Sheet.SheetTrigger className="self-end">
+          <Button>Adicionar</Button>
         </Sheet.SheetTrigger>
         <Sheet.SheetContent>
           <AutoForm formSchema={formSchema} onSubmit={onSubmit}>

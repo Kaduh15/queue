@@ -67,7 +67,6 @@ function App() {
         toast({
           title: 'Erro ao adicionar cliente',
           variant: 'destructive',
-          description: err.response?.data.error,
           duration: 2000,
         })
       }
