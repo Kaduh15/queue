@@ -11,7 +11,7 @@ export default function useFetch<Data = Record<string, string>>({
 }: UseFetchProps) {
   const [data, setData] = useState<Data | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<AxiosError | null>(null)
 
   useEffect(() => {
     try {
