@@ -27,7 +27,7 @@ export default function useFetch<Data = Record<string, string>>({
     } finally {
       setIsLoading(false)
     }
-  }, [error, url])
+  }, [error, url, isLoading])
 
   return {
     data,
