@@ -12,6 +12,11 @@ export default function useFetch<Data = Record<string, string>>({
   const [data, setData] = useState<Data | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<AxiosError | null>(null)
+  const [refresh, setRefresh] = useState<boolean>(false)
+
+  const refreshData = () => {
+    setRefresh((prev) => !prev)
+  }
 
   useEffect(() => {
     try {
@@ -27,11 +32,13 @@ export default function useFetch<Data = Record<string, string>>({
     } finally {
       setIsLoading(false)
     }
-  }, [error, url, isLoading])
+  }, [error, url, isLoading, refresh])
 
   return {
     data,
     isLoading,
     error,
+    refreshData,
+    refresh,
   }
 }

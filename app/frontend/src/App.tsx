@@ -1,39 +1,77 @@
+import { AxiosError } from 'axios'
+
 import SheetAddCustomer, { FormSchema } from './components/SheetAddCustomer'
 import TableQueue, { Customer } from './components/TableQueue'
 import * as Card from './components/ui/card'
+import { Toaster } from './components/ui/toaster'
+import { useToast } from './components/ui/use-toast'
 import useFetch from './hooks/useFetch'
 import { api } from './lib/api'
 
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY5MTU5MTU4NiwiZXhwIjoxNjkxNjc3OTg2fQ.8uRvNVyltSWoRdoM-UaMcYFd8tlK1ZdgUmwg--Q6uD8'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY5MTY3ODgxNCwiZXhwIjoxNjkxNzY1MjE0fQ.G3IzAWgmSbnr_il5vjabBbm7TBGHJIIfd2GwSfjWTcQ'
 
 function App() {
-  const { data: customers } = useFetch<Customer[]>({
+  const { data: customers, refreshData } = useFetch<Customer[]>({
     url: '/queue/today',
   })
+
+  const { toast } = useToast()
 
   const nextCustomer = customers?.find(
     (customer) => customer.status === 'WAITING',
   )
 
   const handleSubmit = async (data: FormSchema) => {
-    await api.post('/queue', data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-  }
-
-  const handleUpdateStatus = async (id: number, status: string) => {
-    await api.post(
-      `/queue/${id}?status=${status}`,
-      {},
-      {
+    try {
+      await api.post('/queue', data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
-    )
+      })
+
+      toast({
+        title: 'Cliente adicionado com sucesso',
+        variant: 'default',
+        duration: 2000,
+      })
+      refreshData()
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err)
+        toast({
+          title: 'Erro ao adicionar cliente',
+          variant: 'destructive',
+          duration: 2000,
+        })
+      }
+    }
+  }
+
+  const handleUpdateStatus = async (id: number, status: string) => {
+    try {
+      await api.post(
+        `/queue/${id}?status=${status}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+
+      refreshData()
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err)
+        toast({
+          title: 'Erro ao adicionar cliente',
+          variant: 'destructive',
+          description: err.response?.data.error,
+          duration: 2000,
+        })
+      }
+    }
   }
 
   return (
@@ -52,6 +90,7 @@ function App() {
       )}
 
       <TableQueue customers={customers} onStatusChange={handleUpdateStatus} />
+      <Toaster />
     </main>
   )
 }
