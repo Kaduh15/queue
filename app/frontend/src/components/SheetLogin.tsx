@@ -27,7 +27,24 @@ export default function SheetLogin({
           <Open isOpen={isOpen} />
         </Sheet.SheetTrigger>
         <Sheet.SheetContent>
-          <AutoForm formSchema={formSchema} onSubmit={onSubmit}>
+          <AutoForm
+            formSchema={formSchema}
+            onSubmit={onSubmit}
+            fieldConfig={{
+              email: {
+                inputProps: {
+                  type: 'email',
+                  placeholder: 'jose@email.com',
+                },
+              },
+              password: {
+                inputProps: {
+                  type: 'password',
+                  placeholder: '********',
+                },
+              },
+            }}
+          >
             <Sheet.SheetClose>
               <AutoFormSubmit>Fazer Login</AutoFormSubmit>
             </Sheet.SheetClose>
