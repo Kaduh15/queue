@@ -2,21 +2,9 @@ import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import AutoForm, { AutoFormSubmit } from './components/ui/auto-form'
 import { Button } from './components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card'
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTrigger,
-} from './components/ui/sheet'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from './components/ui/table'
+import * as Card from './components/ui/card'
+import * as Sheet from './components/ui/sheet'
+import * as Table from './components/ui/table'
 import { api } from './lib/api'
 
 const token =
@@ -87,70 +75,72 @@ function App() {
 
   return (
     <main className="flex flex-col h-screen p-5 items-center gap-4">
-      <Sheet>
-        <SheetTrigger className="bg-stone-900 text-stone-100 py-1 px-4 rounded-lg self-end">
+      <Sheet.Sheet>
+        <Sheet.SheetTrigger className="bg-stone-900 text-stone-100 py-1 px-4 rounded-lg self-end">
           Adicionar
-        </SheetTrigger>
-        <SheetContent>
+        </Sheet.SheetTrigger>
+        <Sheet.SheetContent>
           <AutoForm formSchema={formSchema} onSubmit={handleSubmit}>
-            <SheetClose>
+            <Sheet.SheetClose>
               <AutoFormSubmit>Adicionar</AutoFormSubmit>
-            </SheetClose>
+            </Sheet.SheetClose>
           </AutoForm>
-        </SheetContent>
-      </Sheet>
+        </Sheet.SheetContent>
+      </Sheet.Sheet>
 
       {nextCustomer && (
-        <Card className="flex justify-center items-center p-4 gap-3">
-          <CardHeader className="p-0">
-            <CardTitle>Proximo:</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
+        <Card.Card className="flex justify-center items-center p-4 gap-3">
+          <Card.CardHeader className="p-0">
+            <Card.CardTitle>Proximo:</Card.CardTitle>
+          </Card.CardHeader>
+          <Card.CardContent className="p-0">
             <p> {nextCustomer.name}</p>
-          </CardContent>
-        </Card>
+          </Card.CardContent>
+        </Card.Card>
       )}
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>N°</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+      <Table.Table>
+        <Table.TableHeader>
+          <Table.TableRow>
+            <Table.TableHead>N°</Table.TableHead>
+            <Table.TableHead>Name</Table.TableHead>
+            <Table.TableHead>Status</Table.TableHead>
+          </Table.TableRow>
+        </Table.TableHeader>
+        <Table.TableBody>
           {customers.map((customer, index) => {
             return (
-              <TableRow key={customer.id}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell>{customer.name}</TableCell>
-                <TableCell>{Status[customer.status]}</TableCell>
+              <Table.TableRow key={customer.id}>
+                <Table.TableCell className="font-medium">
+                  {index + 1}
+                </Table.TableCell>
+                <Table.TableCell>{customer.name}</Table.TableCell>
+                <Table.TableCell>{Status[customer.status]}</Table.TableCell>
                 {index === 0 && customer.status === 'WAITING' && (
-                  <TableCell>
+                  <Table.TableCell>
                     <Button
                       onClick={() => handleUpdateStatus(customer.id, 'DONE')}
                     >
                       Atender
                     </Button>
-                  </TableCell>
+                  </Table.TableCell>
                 )}
                 {index > 0 &&
                   customers[index - 1].status !== 'WAITING' &&
                   customer.status === 'WAITING' && (
-                    <TableCell>
+                    <Table.TableCell>
                       <Button
                         onClick={() => handleUpdateStatus(customer.id, 'DONE')}
                       >
                         Atender
                       </Button>
-                    </TableCell>
+                    </Table.TableCell>
                   )}
-              </TableRow>
+              </Table.TableRow>
             )
           })}
-        </TableBody>
-      </Table>
+        </Table.TableBody>
+      </Table.Table>
     </main>
   )
 }
