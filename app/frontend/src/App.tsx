@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
+import * as AlertDialog from './components/ui/alert-dialog'
 import AutoForm, { AutoFormSubmit } from './components/ui/auto-form'
 import { Button } from './components/ui/button'
 import * as Card from './components/ui/card'
@@ -118,22 +119,86 @@ function App() {
                 <Table.TableCell>{Status[customer.status]}</Table.TableCell>
                 {index === 0 && customer.status === 'WAITING' && (
                   <Table.TableCell>
-                    <Button
-                      onClick={() => handleUpdateStatus(customer.id, 'DONE')}
-                    >
-                      Atender
-                    </Button>
+                    <AlertDialog.AlertDialog>
+                      <AlertDialog.AlertDialogTrigger asChild>
+                        <Button>Atualizar</Button>
+                      </AlertDialog.AlertDialogTrigger>
+                      <AlertDialog.AlertDialogContent>
+                        <AlertDialog.AlertDialogHeader>
+                          <AlertDialog.AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialog.AlertDialogTitle>
+                          <AlertDialog.AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your account and remove your data from our
+                            servers.
+                          </AlertDialog.AlertDialogDescription>
+                        </AlertDialog.AlertDialogHeader>
+                        <AlertDialog.AlertDialogFooter className="space-y-1">
+                          <AlertDialog.AlertDialogCancel>
+                            Cancel
+                          </AlertDialog.AlertDialogCancel>
+                          <AlertDialog.AlertDialogAction
+                            onClick={() =>
+                              handleUpdateStatus(customer.id, 'ABSENT')
+                            }
+                          >
+                            Ausente
+                          </AlertDialog.AlertDialogAction>
+                          <AlertDialog.AlertDialogAction
+                            onClick={() =>
+                              handleUpdateStatus(customer.id, 'DONE')
+                            }
+                          >
+                            Atendido
+                          </AlertDialog.AlertDialogAction>
+                        </AlertDialog.AlertDialogFooter>
+                      </AlertDialog.AlertDialogContent>
+                    </AlertDialog.AlertDialog>
                   </Table.TableCell>
                 )}
                 {index > 0 &&
                   customers[index - 1].status !== 'WAITING' &&
                   customer.status === 'WAITING' && (
                     <Table.TableCell>
-                      <Button
-                        onClick={() => handleUpdateStatus(customer.id, 'DONE')}
-                      >
-                        Atender
-                      </Button>
+                      <Table.TableCell>
+                        <AlertDialog.AlertDialog>
+                          <AlertDialog.AlertDialogTrigger asChild>
+                            <Button>Atualizar</Button>
+                          </AlertDialog.AlertDialogTrigger>
+                          <AlertDialog.AlertDialogContent>
+                            <AlertDialog.AlertDialogHeader>
+                              <AlertDialog.AlertDialogTitle>
+                                Are you absolutely sure?
+                              </AlertDialog.AlertDialogTitle>
+                              <AlertDialog.AlertDialogDescription>
+                                This action cannot be undone. This will
+                                permanently delete your account and remove your
+                                data from our servers.
+                              </AlertDialog.AlertDialogDescription>
+                            </AlertDialog.AlertDialogHeader>
+                            <AlertDialog.AlertDialogFooter className="space-y-1">
+                              <AlertDialog.AlertDialogCancel>
+                                Cancel
+                              </AlertDialog.AlertDialogCancel>
+                              <AlertDialog.AlertDialogAction
+                                onClick={() =>
+                                  handleUpdateStatus(customer.id, 'ABSENT')
+                                }
+                              >
+                                Ausente
+                              </AlertDialog.AlertDialogAction>
+                              <AlertDialog.AlertDialogAction
+                                onClick={() =>
+                                  handleUpdateStatus(customer.id, 'DONE')
+                                }
+                              >
+                                Atendido
+                              </AlertDialog.AlertDialogAction>
+                            </AlertDialog.AlertDialogFooter>
+                          </AlertDialog.AlertDialogContent>
+                        </AlertDialog.AlertDialog>
+                      </Table.TableCell>
                     </Table.TableCell>
                   )}
               </Table.TableRow>
