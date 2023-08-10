@@ -3,7 +3,12 @@ import { z } from 'zod'
 import AutoForm, { AutoFormSubmit } from './components/ui/auto-form'
 import { Button } from './components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card'
-import { Dialog, DialogContent, DialogTrigger } from './components/ui/dialog'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from './components/ui/sheet'
 import {
   Table,
   TableBody,
@@ -82,16 +87,18 @@ function App() {
 
   return (
     <main className="flex flex-col h-screen p-5 items-center gap-4">
-      <Dialog>
-        <DialogTrigger className="bg-stone-900 text-stone-100 py-1 px-4 rounded-lg self-end">
+      <Sheet>
+        <SheetTrigger className="bg-stone-900 text-stone-100 py-1 px-4 rounded-lg self-end">
           Adicionar
-        </DialogTrigger>
-        <DialogContent>
+        </SheetTrigger>
+        <SheetContent>
           <AutoForm formSchema={formSchema} onSubmit={handleSubmit}>
-            <AutoFormSubmit>Adicionar</AutoFormSubmit>
+            <SheetClose>
+              <AutoFormSubmit>Adicionar</AutoFormSubmit>
+            </SheetClose>
           </AutoForm>
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
 
       {nextCustomer && (
         <Card className="flex justify-center items-center p-4 gap-3">
