@@ -20,12 +20,12 @@ export type Customer = {
 }
 
 type TableQueueProps = {
-  customers: Customer[]
+  customers?: Customer[] | null
   onStatusChange: (id: number, status: TStatus) => void
 }
 
 export default function TableQueue({
-  customers,
+  customers = [],
   onStatusChange,
 }: TableQueueProps) {
   return (
@@ -39,7 +39,7 @@ export default function TableQueue({
           </Table.TableRow>
         </Table.TableHeader>
         <Table.TableBody>
-          {customers.map((customer, index) => {
+          {customers?.map((customer, index) => {
             return (
               <Table.TableRow key={customer.id}>
                 <Table.TableCell className="font-medium">
