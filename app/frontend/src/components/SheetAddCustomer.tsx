@@ -16,11 +16,13 @@ type SheetAddCustomerProps = {
 }
 
 export default function SheetAddCustomer({ onSubmit }: SheetAddCustomerProps) {
+  const token = localStorage.getItem('token') || ''
+
   return (
     <>
       <Sheet.Sheet>
         <Sheet.SheetTrigger className="self-end">
-          <Button>Adicionar</Button>
+          <Button disabled={!token}>Adicionar</Button>
         </Sheet.SheetTrigger>
         <Sheet.SheetContent>
           <AutoForm formSchema={formSchema} onSubmit={onSubmit}>
