@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios'
 
+import { ModeToggle } from './components/mode-toggle'
 import SheetAddCustomer, { FormSchema } from './components/SheetAddCustomer'
 import TableQueue, { Customer } from './components/TableQueue'
 import * as Card from './components/ui/card'
@@ -75,7 +76,10 @@ function App() {
 
   return (
     <main className="flex flex-col h-screen p-5 items-center gap-4">
-      <SheetAddCustomer onSubmit={handleSubmit} />
+      <div className="flex flex-row-reverse justify-between items-center w-full">
+        <ModeToggle />
+        <SheetAddCustomer onSubmit={handleSubmit} />
+      </div>
 
       {nextCustomer && (
         <Card.Card className="flex justify-center items-center p-4 gap-3">
