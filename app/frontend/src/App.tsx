@@ -36,24 +36,24 @@ type FormSchema = z.infer<typeof formSchema>
 
 function App() {
   const [customers, setCustomers] = useState<Customer[]>([])
-  const [statusRequest, setStatusRequest] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const nextCustomer = customers.find(
     (customer) => customer.status === 'WAITING',
   )
 
   const handleSubmit = async (data: FormSchema) => {
-    setStatusRequest(true)
+    setIsLoading(true)
     await api.post('/queue', data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-    setStatusRequest(false)
+    setIsLoading(false)
   }
 
   const handleUpdateStatus = async (id: number, status: string) => {
-    setStatusRequest(true)
+    setIsLoading(true)
     await api.post(
       `/queue/${id}?status=${status}`,
       {},
@@ -63,7 +63,7 @@ function App() {
         },
       },
     )
-    setStatusRequest(false)
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -73,7 +73,7 @@ function App() {
         return setCustomers(data.data)
       })
       .catch((error) => console.log(error))
-  }, [statusRequest])
+  }, [isLoading])
 
   return (
     <main className="flex flex-col h-screen p-5 items-center gap-4">
