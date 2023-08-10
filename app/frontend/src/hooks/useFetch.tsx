@@ -32,5 +32,6 @@ export default function useFetch<Data = Record<string, string>>({
   return {
     data,
     isLoading,
+    error,
   }
 }
