@@ -2,7 +2,7 @@
   "name": "whatspp_api",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.cjs",
+  "main": "dist/server.js",
   "scripts": {
     "build": "tsup",
     "dev": "tsx watch src/server.ts",
