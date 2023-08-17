@@ -55,6 +55,7 @@ services:
       - ./app/whatsapp-api/src:/app-whatsapp-api/src
     environment:
       - PORT=3002
+      - NODE_ENV=production
     healthcheck:
       test: ["CMD", "lsof", "-t", "-i:3002"] # Caso utilize outra porta interna para o back, altere ela aqui também
       timeout: 10s

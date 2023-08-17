@@ -1,18 +1,17 @@
 import { Request, Response, Router } from 'express'
 
-import { page } from '@/app'
-import browser from '@/browser'
-import { getQrCode, isLogger } from '@/browser/browser'
+import { getQrCode, isLogger, sendMessage } from '@/browser'
 
 const whatsappRouter = Router()
 
 whatsappRouter.get('/', async (_req: Request, res: Response) => {
   console.log('/')
-  if (await isLogger(await page)) {
+  const isLogin = await isLogger()
+  if (isLogin) {
     return res.json({ logger: true })
   }
 
-  const qrCode = await getQrCode(await page)
+  const qrCode = await getQrCode()
 
   return res.json({ qrCode })
 })
@@ -24,9 +23,8 @@ whatsappRouter.get('/send/:phone', async (req: Request, res: Response) => {
 
   const message = (text as string) || 'Hello World!'
 
-  if (await isLogger(await page)) {
-    await browser.sendMessage({ page: await page, message, phone })
-
+  if (await isLogger()) {
+    await sendMessage({ message, phone })
     return res.json({ status: 'ok', message, to: phone })
   }
 
