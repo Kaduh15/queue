@@ -1,3 +1,7 @@
 {
-  "prisma.fileWatcher": true
+  "prisma.fileWatcher": true,
+  "cSpell.words": [
+    "domcontentloaded",
+    "qrcodeterminal"
+  ]
 }
