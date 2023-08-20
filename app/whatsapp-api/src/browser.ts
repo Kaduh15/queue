@@ -70,7 +70,9 @@ export default class WAClient {
 
     await page.reload()
 
-    const qrCodeElement = await page.waitForSelector('._19vUU[data-ref]')
+    const qrCodeElement = await page.waitForSelector('._19vUU[data-ref]', {
+      timeout: 60000,
+    })
     const qrCode = await qrCodeElement?.evaluate((el) =>
       el.getAttribute('data-ref'),
     )
