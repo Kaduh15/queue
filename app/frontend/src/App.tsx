@@ -1,5 +1,4 @@
 import { AxiosError } from 'axios'
-import { useState } from 'react'
 
 import { ModeToggle } from './components/mode-toggle'
 import SheetAddCustomer, { FormSchema } from './components/SheetAddCustomer'
@@ -11,6 +10,7 @@ import { Toaster } from './components/ui/toaster'
 import { useToast } from './components/ui/use-toast'
 import useFetch from './hooks/useFetch'
 import { api } from './lib/api'
+import useAuthStore from './store/authStore'
 
 function App() {
   const { data: customers, refreshData } = useFetch<Customer[]>({
@@ -24,9 +24,11 @@ function App() {
 
   const isOpen = open?.isOpen || false
 
-  const [token, setToken] = useState<string>(
-    localStorage.getItem('token') || '',
-  )
+  const [token, setToken] = useAuthStore((store) => [
+    store.store.token,
+    store.actions().setToken,
+  ])
+  console.log('🚀 ~ file: App.tsx:31 ~ App ~ token:', token)
 
   const { toast } = useToast()
 
@@ -63,7 +65,6 @@ function App() {
   const handleLogin = async (data: LoginFormSchema) => {
     try {
       const { data: response } = await api.post('/login', data)
-      localStorage.setItem('token', response.token)
       setToken(response.token)
 
       toast({
@@ -147,7 +148,7 @@ function App() {
         <ModeToggle />
         {token && <Switch onClick={handleOpen} checked={isOpen} />}
         {!token && <SheetLogin onSubmit={handleLogin} isOpen={isOpen} />}
-        <SheetAddCustomer onSubmit={handleSubmit} />
+        {token && <SheetAddCustomer onSubmit={handleSubmit} />}
       </div>
 
       {nextCustomer && (
