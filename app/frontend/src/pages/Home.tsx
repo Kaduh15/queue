@@ -135,7 +135,7 @@ export default function Home() {
 
   const handleUpdateStatus = async (id: number, status: string) => {
     try {
-      await api.post(
+      const { data } = await api.post(
         `/queue/${id}?status=${status}`,
         {},
         {
@@ -144,13 +144,22 @@ export default function Home() {
           },
         },
       )
+      const newCustomers = customers?.map((customer) => {
+        if (customer.id === id) {
+          return {
+            ...customer,
+            status: data.status,
+          }
+        }
+        return customer
+      })
 
-      refreshData()
+      optimistic(newCustomers)
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err)
         toast({
-          title: 'Erro ao adicionar cliente',
+          title: 'Erro ao atualizar o status do cliente',
           variant: 'destructive',
           duration: 2000,
         })
