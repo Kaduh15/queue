@@ -6,10 +6,10 @@ import Home from './pages/Home'
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
+    element: Home(),
   },
   {
     path: '/config',
-    element: <Config />,
+    element: Config(),
   },
 ])
