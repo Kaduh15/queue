@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios'
+import { AxiosError, AxiosInstance } from 'axios'
 import { useEffect, useState } from 'react'
 
 import { api } from '@/lib/api'
@@ -6,11 +6,13 @@ import { api } from '@/lib/api'
 type UseFetchProps<Data> = {
   url: string
   initialData: Data
+  fetcher?: AxiosInstance
 }
 
 export default function useFetch<Data = Record<string, string>>({
   url,
   initialData,
+  fetcher = api,
 }: UseFetchProps<Data>) {
   const [data, setData] = useState<Data | typeof initialData>(initialData)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -28,18 +30,28 @@ export default function useFetch<Data = Record<string, string>>({
   useEffect(() => {
     try {
       setIsLoading(true)
-      api.get<Data>(url).then((data) => {
-        return setData(data.data)
-      })
+      fetcher
+        .get<Data>(url)
+        .then((data) => {
+          console.log('🚀 ~ file: useFetch.tsx:57 ~ data', data)
+          setIsLoading(false)
+          setData(data.data)
+        })
+        .catch((err) => {
+          console.log('🚀 ~ file: useFetch.tsx:57 ~ err', err)
+          if (err instanceof AxiosError) {
+            setError(error)
+            setIsLoading(false)
+          }
+        })
     } catch (err) {
       if (err instanceof AxiosError) {
-        console.log(err)
         setError(error)
       }
     } finally {
       setIsLoading(false)
     }
-  }, [error, url, isLoading, refresh])
+  }, [error, url, isLoading, refresh, fetcher])
 
   return {
     data,
