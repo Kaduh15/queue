@@ -1,10 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider } from 'react-router-dom'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import { ThemeProvider } from './components/theme-provider.tsx'
 import './index.css'
-import { router } from './routes.ts'
+import Config from './pages/Config.tsx'
+import Home from './pages/Home.tsx'
+
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+  },
+  {
+    path: '/config',
+    element: <Config />,
+  },
+])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
