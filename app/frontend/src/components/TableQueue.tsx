@@ -1,6 +1,7 @@
 import * as AlertDialog from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import * as Table from '@/components/ui/table'
+import useAuthStore from '@/store/authStore'
 
 enum Status {
   WAITING = 'ESPERANDO',
@@ -28,6 +29,8 @@ export default function TableQueue({
   customers = [],
   onStatusChange,
 }: TableQueueProps) {
+  const { token } = useAuthStore((store) => store.store)
+
   return (
     <>
       <Table.Table>
@@ -47,7 +50,7 @@ export default function TableQueue({
                 </Table.TableCell>
                 <Table.TableCell>{customer.name}</Table.TableCell>
                 <Table.TableCell>{Status[customer.status]}</Table.TableCell>
-                {index === 0 && customer.status === 'WAITING' && (
+                {index === 0 && customer.status === 'WAITING' && token && (
                   <Table.TableCell>
                     <AlertDialog.AlertDialog>
                       <AlertDialog.AlertDialogTrigger asChild>
@@ -86,6 +89,7 @@ export default function TableQueue({
                   </Table.TableCell>
                 )}
                 {index > 0 &&
+                  token &&
                   customers[index - 1].status !== 'WAITING' &&
                   customer.status === 'WAITING' && (
                     <Table.TableCell>

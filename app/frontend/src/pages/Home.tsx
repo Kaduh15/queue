@@ -4,12 +4,13 @@ import { ModeToggle } from '@/components/mode-toggle'
 import SheetAddCustomer, { FormSchema } from '@/components/SheetAddCustomer'
 import SheetLogin, { LoginFormSchema } from '@/components/SheetLogin'
 import TableQueue, { Customer } from '@/components/TableQueue'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
 import useFetch from '@/hooks/useFetch'
-import { api } from '@/lib/api'
+import { api, apiWhatsapp } from '@/lib/api'
 import useAuthStore from '@/store/authStore'
 
 type Open = {
@@ -48,6 +49,36 @@ export default function Home() {
   const nextCustomer = customers?.find(
     (customer) => customer.status === 'WAITING',
   )
+
+  const handleSendMessages = async (phone: string, text: string) => {
+    try {
+      const { data } = await apiWhatsapp.get(`/login`)
+
+      if (data.status !== 'success') {
+        toast({
+          title: 'Whatsapp não está conectado',
+          variant: 'destructive',
+          duration: 2000,
+        })
+        return
+      }
+      await apiWhatsapp.get(`/send?phone=${phone}&text=${text}`)
+      toast({
+        title: 'Mensagem enviada com sucesso',
+        variant: 'default',
+        duration: 2000,
+      })
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err)
+        toast({
+          title: 'Erro ao enviar mensagem para o cliente',
+          variant: 'destructive',
+          duration: 2000,
+        })
+      }
+    }
+  }
 
   const handleSubmit = async (data: FormSchema) => {
     try {
@@ -144,8 +175,12 @@ export default function Home() {
           },
         },
       )
-      const newCustomers = customers?.map((customer) => {
+      let next = -1
+
+      const newCustomers = customers?.map((customer, index) => {
         if (customer.id === id) {
+          next = index + 1
+
           return {
             ...customer,
             status: data.status,
@@ -153,8 +188,26 @@ export default function Home() {
         }
         return customer
       })
-
       optimistic(newCustomers)
+
+      const nextCustomer = newCustomers[next]
+      if (!nextCustomer) return
+
+      if (nextCustomer && nextCustomer.phoneNumber && status === 'DONE') {
+        await handleSendMessages(
+          nextCustomer.phoneNumber,
+          `${nextCustomer.name} você é o próximo!`,
+        )
+        return
+      }
+
+      if (nextCustomer && !nextCustomer.phoneNumber) {
+        toast({
+          title: 'Cliente não possui telefone',
+          variant: 'default',
+          duration: 2000,
+        })
+      }
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err)
@@ -185,6 +238,12 @@ export default function Home() {
             <p> {nextCustomer.name}</p>
           </CardContent>
         </Card>
+      )}
+
+      {!token && (
+        <>
+          <Button onClick={refreshData}>Atualizar</Button>
+        </>
       )}
 
       <TableQueue customers={customers} onStatusChange={handleUpdateStatus} />

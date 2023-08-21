@@ -5,7 +5,7 @@ import useFetch from '@/hooks/useFetch'
 import { apiWhatsapp } from '@/lib/api'
 
 export default function Config() {
-  const { data, isLoading, error } = useFetch<{
+  const { data, isLoading } = useFetch<{
     qrCode: string
     status?: string
   }>({
@@ -15,15 +15,13 @@ export default function Config() {
   })
 
   const navigate = useNavigate()
-  console.log('🚀 ~ file: Config.tsx:14 ~ Config ~ error:', error)
 
   if (isLoading) {
     return <p>Loading...</p>
   }
-  console.log(data)
 
   if (data.status === 'success') {
-    return navigate('/')
+    navigate('/')
   }
 
   return (

@@ -33,12 +33,10 @@ export default function useFetch<Data = Record<string, string>>({
       fetcher
         .get<Data>(url)
         .then((data) => {
-          console.log('🚀 ~ file: useFetch.tsx:57 ~ data', data)
           setIsLoading(false)
           setData(data.data)
         })
         .catch((err) => {
-          console.log('🚀 ~ file: useFetch.tsx:57 ~ err', err)
           if (err instanceof AxiosError) {
             setError(error)
             setIsLoading(false)
