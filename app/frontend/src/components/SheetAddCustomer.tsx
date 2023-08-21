@@ -1,6 +1,8 @@
+import { z } from 'zod'
+
 import AutoForm, { AutoFormSubmit } from '@/components/ui/auto-form'
 import * as Sheet from '@/components/ui/sheet'
-import { z } from 'zod'
+import useAuthStore from '@/store/authStore'
 
 import { Button } from './ui/button'
 
@@ -16,7 +18,7 @@ type SheetAddCustomerProps = {
 }
 
 export default function SheetAddCustomer({ onSubmit }: SheetAddCustomerProps) {
-  const token = localStorage.getItem('token') || ''
+  const token = useAuthStore((store) => store.store.token)
 
   return (
     <>

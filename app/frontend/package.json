@@ -37,10 +37,13 @@
     "react-day-picker": "^8.8.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.4",
+    "react-qr-code": "^2.0.12",
+    "react-router-dom": "^6.15.0",
     "tailwind-merge": "^1.14.0",
     "tailwind-variants": "^0.1.13",
     "tailwindcss-animate": "^1.0.6",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^2.1.0",
