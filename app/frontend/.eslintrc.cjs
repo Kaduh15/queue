@@ -21,7 +21,7 @@ module.exports = {
           newlinesBetween: 'always',
           groups: [
               'module',
-              '/^@shared/',
+              '/@//',
               ['parent', 'sibling', 'index'],
           ],
           alphabetize: { order: 'asc', ignoreCase: true },

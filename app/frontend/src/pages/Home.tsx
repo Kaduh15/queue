@@ -1,34 +1,47 @@
 import { AxiosError } from 'axios'
 
-import { ModeToggle } from './components/mode-toggle'
-import SheetAddCustomer, { FormSchema } from './components/SheetAddCustomer'
-import SheetLogin, { LoginFormSchema } from './components/SheetLogin'
-import TableQueue, { Customer } from './components/TableQueue'
-import * as Card from './components/ui/card'
-import { Switch } from './components/ui/switch'
-import { Toaster } from './components/ui/toaster'
-import { useToast } from './components/ui/use-toast'
-import useFetch from './hooks/useFetch'
-import { api } from './lib/api'
-import useAuthStore from './store/authStore'
+import { ModeToggle } from '@/components/mode-toggle'
+import SheetAddCustomer, { FormSchema } from '@/components/SheetAddCustomer'
+import SheetLogin, { LoginFormSchema } from '@/components/SheetLogin'
+import TableQueue, { Customer } from '@/components/TableQueue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
+import { Toaster } from '@/components/ui/toaster'
+import { useToast } from '@/components/ui/use-toast'
+import useFetch from '@/hooks/useFetch'
+import { api } from '@/lib/api'
+import useAuthStore from '@/store/authStore'
 
-function App() {
-  const { data: customers, refreshData } = useFetch<Customer[]>({
+type Open = {
+  isOpen: boolean
+}
+
+export default function Home() {
+  const {
+    data: customers,
+    refreshData,
+    optimistic,
+  } = useFetch<Customer[]>({
     url: '/queue/today',
+    initialData: [],
   })
-  const { data: open, refreshData: refreshOpen } = useFetch<{
-    isOpen: boolean
-  }>({
+  const {
+    data: open,
+    refreshData: refreshOpen,
+    optimistic: optimisticOpen,
+  } = useFetch<Open>({
     url: '/open',
+    initialData: {
+      isOpen: false,
+    },
   })
 
-  const isOpen = open?.isOpen || false
+  const isOpen = open.isOpen || false
 
   const [token, setToken] = useAuthStore((store) => [
     store.store.token,
     store.actions().setToken,
   ])
-  console.log('🚀 ~ file: App.tsx:31 ~ App ~ token:', token)
 
   const { toast } = useToast()
 
@@ -38,18 +51,20 @@ function App() {
 
   const handleSubmit = async (data: FormSchema) => {
     try {
-      await api.post('/queue', data, {
+      const response = await api.post<Customer>('/queue', data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
+
+      const newCustomers = [...(customers || []), response.data]
+      optimistic(newCustomers)
 
       toast({
         title: 'Cliente adicionado com sucesso',
         variant: 'default',
         duration: 2000,
       })
-      refreshData()
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err)
@@ -87,8 +102,10 @@ function App() {
   }
 
   const handleOpen = async () => {
+    const response = isOpen ? 'fechar' : 'abrir'
+
     try {
-      const { data: response } = await api.post(
+      const { data: response } = await api.post<Open>(
         '/open',
         {},
         {
@@ -97,19 +114,18 @@ function App() {
           },
         },
       )
-      console.log('🚀 ~ file: App.tsx:98 ~ handleOpen ~ response:', response)
+      optimisticOpen(response)
 
       toast({
-        title: `${response.isOpen.isOpen ? 'Aberto' : 'Fechado'} com sucesso`,
+        title: `${response.isOpen ? 'Aberto' : 'Fechado'} com sucesso`,
         variant: 'default',
         duration: 2000,
       })
-      refreshOpen()
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err)
         toast({
-          title: 'Erro ao adicionar cliente',
+          title: `Erro ao ${response} cliente`,
           variant: 'destructive',
           duration: 2000,
         })
@@ -152,14 +168,14 @@ function App() {
       </div>
 
       {nextCustomer && (
-        <Card.Card className="flex justify-center items-center p-4 gap-3">
-          <Card.CardHeader className="p-0">
-            <Card.CardTitle>Proximo:</Card.CardTitle>
-          </Card.CardHeader>
-          <Card.CardContent className="p-0">
+        <Card className="flex justify-center items-center p-4 gap-3">
+          <CardHeader className="p-0">
+            <CardTitle>Proximo:</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
             <p> {nextCustomer.name}</p>
-          </Card.CardContent>
-        </Card.Card>
+          </CardContent>
+        </Card>
       )}
 
       <TableQueue customers={customers} onStatusChange={handleUpdateStatus} />
@@ -167,5 +183,3 @@ function App() {
     </main>
   )
 }
-
-export default App
