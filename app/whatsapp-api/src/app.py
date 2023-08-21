@@ -1,6 +1,7 @@
 import os
 
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import load_dotenv, find_dotenv
 
@@ -11,6 +12,14 @@ load_dotenv(find_dotenv())
 IS_PRODUCTION = os.getenv("PY_ENV") == "production"
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 client = WAClient(headless=IS_PRODUCTION)
 
