@@ -44,7 +44,7 @@ export default function useFetch<Data = Record<string, string>>({
         })
     } catch (err) {
       if (err instanceof AxiosError) {
-        setError(error)
+        setError(err)
       }
     } finally {
       setIsLoading(false)
