@@ -17,6 +17,7 @@ async def main():
         log_level="info",
         host="0.0.0.0",
         reload=RELOAD,
+        workers=4,
     )
     server = uvicorn.Server(config)
     await server.serve()
