@@ -7,7 +7,7 @@ import { apiWhatsapp } from '@/lib/api'
 export default function Config() {
   const { data, isLoading } = useFetch<{
     qrCode: string
-    status?: string
+    connected?: boolean
   }>({
     url: '/login',
     initialData: { qrCode: '' },
@@ -20,7 +20,7 @@ export default function Config() {
     return <p>Loading...</p>
   }
 
-  if (data.status === 'success') {
+  if (data.connected) {
     navigate('/')
   }
 

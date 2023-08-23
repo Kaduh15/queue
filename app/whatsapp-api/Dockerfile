@@ -1,19 +1,15 @@
-FROM cypress/browsers:latest
+FROM node:18
 
-ENV PY_ENV=production
+WORKDIR /app-whatsapp-api
 
-RUN apt-get install python3 -y
+RUN npm install npm@latest -g
 
-RUN echo $(python3 -m site --user-base)
+COPY package.json .
 
-COPY requirements.txt  .
-
-ENV PATH /home/root/.local/bin:${PATH}
-
-RUN  apt-get update && apt-get install -y python3-pip && pip install -r requirements.txt  
+RUN npm install
 
 COPY . .
 
-ENTRYPOINT [ "python3" ]
+RUN npm run build
 
-CMD [ "src/main.py" ]
+CMD [ "npm", "run", "dev" ]
