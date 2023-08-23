@@ -54,7 +54,7 @@ export default function Home() {
     try {
       const { data } = await apiWhatsapp.get(`/login`)
 
-      if (data.status !== 'success') {
+      if (!data.connected) {
         toast({
           title: 'Whatsapp não está conectado',
           variant: 'destructive',

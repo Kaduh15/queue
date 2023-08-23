@@ -1,9 +1,11 @@
 {
   "prisma.fileWatcher": true,
   "cSpell.words": [
+    "creds",
     "domcontentloaded",
     "qrcodeterminal",
     "Whatsapp",
+    "whiskeysockets",
     "zustand"
   ]
 }
