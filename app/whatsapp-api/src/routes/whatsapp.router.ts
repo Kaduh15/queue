@@ -1,6 +1,5 @@
 import { Router } from 'express'
 
-import { sleep } from '../lib/whatsapp'
 import { client } from '../server'
 
 const whatsappRouter = Router()
@@ -10,21 +9,9 @@ whatsappRouter.get('/login', async (req, res) => {
     return res.status(500).json({ error: 'Client not initialized' })
   }
 
-  if (client.hasInit) {
-    await sleep(3000)
-    const result = await client.getQRCode()
-    console.log(
-      '🚀 ~ file: whatsapp.router.ts:16 ~ whatsappRouter.get ~ result:',
-      result,
-    )
+  const result = await client.getQRCode()
 
-    return res.status(200).json(result)
-  }
-
-  await client.init()
-  await sleep(3000)
-
-  return res.status(200).json({ qrCode: client.qrCode })
+  return res.status(200).json(result)
 })
 
 whatsappRouter.get('/send', async (req, res) => {

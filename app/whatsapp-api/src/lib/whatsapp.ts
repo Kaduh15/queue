@@ -1,8 +1,11 @@
 import makeWASocket, {
+  DisconnectReason,
   WASocket,
   useMultiFileAuthState,
 } from '@whiskeysockets/baileys'
+import Boom from 'boom'
 import { pino } from 'pino'
+import qrCodeTerminal from 'qrcode-terminal'
 
 export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -10,17 +13,18 @@ export async function sleep(ms: number) {
 
 export default class WhatsappInstance {
   sock?: WASocket
-  qrCode = ''
-  hasInit = false
+  qrCode: string | undefined
 
-  async init() {
-    const { state, saveCreds } = await useMultiFileAuthState('auth')
+  async init(pathAuthFile = 'auth') {
+    const { state, saveCreds } = await useMultiFileAuthState(
+      `auth/${pathAuthFile}`,
+    )
 
     this.sock = makeWASocket({
       auth: state,
       defaultQueryTimeoutMs: undefined,
       logger: pino({
-        level: 'info',
+        level: 'silent',
         transport: {
           target: 'pino-pretty',
           options: {
@@ -28,32 +32,35 @@ export default class WhatsappInstance {
           },
         },
       }),
-      mobile: true,
     })
 
-    this.sock.ev.on('connection.update', async (update) => {
-      const { connection, qr } = update
+    this.sock.ev.on('connection.update', (update) => {
+      const { connection, lastDisconnect, qr } = update
+
       if (qr) {
         this.qrCode = qr
-        console.log(
-          '🚀 ~ file: whatsapp.ts:33 ~ WhatsappInstance ~ this.sock.ev.on ~ qr:',
-          qr,
-        )
       }
 
       if (connection === 'close') {
-        await this.init()
+        const shouldReconnect =
+          new Boom(lastDisconnect?.error).output.statusCode !==
+          DisconnectReason.loggedOut
+
+        if (shouldReconnect) {
+          this.init(pathAuthFile)
+        }
+        return
       }
 
       if (connection === 'open') {
-        this.qrCode = ''
+        this.qrCode = undefined
       }
     })
 
     this.sock.ev.on('creds.update', saveCreds)
 
-    await sleep(3000)
-    this.hasInit = true
+    await sleep(2000)
+    return this
   }
 
   async logout() {
@@ -62,18 +69,23 @@ export default class WhatsappInstance {
 
   async getQRCode() {
     if (this.isConnected()) {
-      console.log('already connected')
       return {
         connected: true,
       }
     }
+    if (this.qrCode) {
+      return {
+        qrCode: this.qrCode,
+      }
+    }
 
-    console.log('not connected')
     await this.sock?.waitForConnectionUpdate((update) => {
-      return !!update.qr
+      const { qr } = update
+
+      this.qrCode = qr || this.qrCode
+      return !!qr
     })
 
-    console.log('got qr code')
     return {
       qrCode: this.qrCode,
     }
@@ -84,30 +96,53 @@ export default class WhatsappInstance {
   }
 
   async sendMessage(phone: string, text: string) {
-    if (!this.sock) {
-      throw new Error('Client not initialized')
+    await this.waitConnectionOpen()
+
+    const exist = await this.sock?.onWhatsApp(phone + '@s.whatsapp.net')
+
+    if (!exist || !exist[0].exists) {
+      throw new Error('Phone not found or invalid')
     }
 
-    if (!this.isConnected()) {
-      throw new Error('Client not connected')
-    }
-
-    const [exist] = await this.sock.onWhatsApp(phone + '@s.whasatpp.net')
-    console.log(
-      '🚀 ~ file: whatsapp.ts:92 ~ WhatsappInstance ~ sendMessage ~ exist:',
-      exist,
-    )
-
-    if (!exist.exists) {
-      throw new Error('Phone not found')
-    }
-
-    const result = await this.sock.sendMessage(exist.jid, { text })
+    const result = await this.sock?.sendMessage(exist[0].jid, { text })
 
     if (result?.key?.id) {
-      await this.sock.waitForMessage(result.key.id)
+      await this.sock?.waitForMessage(result.key.id, 5000)
     }
 
     return result
   }
+
+  async waitConnectionOpen(timeoutMs: number | undefined = 1000) {
+    try {
+      if (!this.sock) {
+        throw new Error('Client not initialized1')
+      }
+      await this.sock.waitForConnectionUpdate((update) => {
+        const { connection } = update
+        return connection === 'open'
+      }, timeoutMs)
+
+      this.qrCode = undefined
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+}
+
+if (require.main === module) {
+  async function main() {
+    const client = await new WhatsappInstance().init('test')
+
+    const qr = await client.getQRCode()
+    if (qr.qrCode) {
+      qrCodeTerminal.generate(qr.qrCode, { small: true })
+    }
+    await client.waitConnectionOpen(60000)
+
+    await client.sendMessage('5587996252178', 'Hello World')
+  }
+
+  main()
 }
