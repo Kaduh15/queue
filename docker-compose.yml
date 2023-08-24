@@ -5,15 +5,17 @@ services:
     build: ./app/frontend
     ports:
       - 3000:3000
-    working_dir: /app-frontend
-    command: sh -c "npm run start"
+    command: sh -c "npm run preview"
     volumes: 
       - ./app/frontend/src:/app-frontend/src
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
+      - whatsapp-api
     environment:
-      - API_URL=http://backend:3001
+      - VITE_API_URL=http://backend:3001
+      - VITE_API_WHATSAPP=http://whatsapp-api:3001
+      - VITE_PORT=3001
+      - VITE_HOST=true
     # Os `healthcheck` devem garantir que a aplicação
     # está operacional, antes de liberar o container
     healthcheck:
@@ -28,8 +30,7 @@ services:
     build: ./app/backend
     ports:
       - 3001:3001
-    working_dir: /app-backend
-    command: sh -c "npm run db:generate && npm run db:migrate && npm run start"
+    command: sh -c "npm run build && npm run db:generate && npm run db:migrate && npm run start"
     volumes: 
       - ./app/backend/src:/app-backend/src
     depends_on:
@@ -41,6 +42,23 @@ services:
       - FRONTEND_URL=http://frontend:3000
     healthcheck:
       test: ["CMD", "lsof", "-t", "-i:3001"] # Caso utilize outra porta interna para o back, altere ela aqui também
+      timeout: 10s
+      retries: 5
+    networks:
+      - app-network
+
+  whatsapp-api:
+    container_name: app_whatsapp-api
+    build: ./app/whatsapp-api
+    ports:
+      - 3002:3002
+    command: sh -c "npm run build && npm run start"
+    volumes: 
+      - ./app/whatsapp-api/src:/app-whatsapp-api/src
+    environment:
+      - PORT=3002
+    healthcheck:
+      test: ["CMD", "lsof", "-t", "-i:3002"] # Caso utilize outra porta interna para o back, altere ela aqui também
       timeout: 10s
       retries: 5
     networks:
