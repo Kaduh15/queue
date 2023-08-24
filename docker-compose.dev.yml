@@ -4,20 +4,21 @@ services:
     container_name: app_frontend
     build: ./app/frontend
     ports:
-      - 3000:3000
+      - 3001:3001
     volumes: 
       - ./app/frontend/src:/app-frontend/src
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
+      - whatsapp-api
     environment:
       - VITE_API_URL=http://backend:3001
-      - VITE_PORT=3000
+      - VITE_API_WHATSAPP=http://whatsapp-api:3001
+      - VITE_PORT=3001
       - VITE_HOST=true
     # Os `healthcheck` devem garantir que a aplicação
     # está operacional, antes de liberar o container
     healthcheck:
-      test: ["CMD", "lsof", "-t", "-i:3000"]  # Caso utilize outra porta interna para o front, altere ela aqui também
+      test: ["CMD", "lsof", "-t", "-i:3001"]  # Caso utilize outra porta interna para o front, altere ela aqui também
       timeout: 10s
       retries: 5
     networks:
@@ -54,8 +55,6 @@ services:
       - ./app/whatsapp-api/src:/app-whatsapp-api/src
     environment:
       - PORT=3002
-      - PY_ENV=production
-      - RELOAD=True
     healthcheck:
       test: ["CMD", "lsof", "-t", "-i:3002"] # Caso utilize outra porta interna para o back, altere ela aqui também
       timeout: 10s

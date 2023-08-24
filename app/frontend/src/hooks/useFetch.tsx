@@ -28,28 +28,23 @@ export default function useFetch<Data = Record<string, string>>({
   }
 
   useEffect(() => {
-    try {
-      setIsLoading(true)
-      fetcher
-        .get<Data>(url)
-        .then((data) => {
-          setIsLoading(false)
-          setData(data.data)
-        })
-        .catch((err) => {
-          if (err instanceof AxiosError) {
-            setError(error)
-            setIsLoading(false)
-          }
-        })
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        setError(err)
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }, [error, url, isLoading, refresh, fetcher])
+    setIsLoading(true)
+    fetcher
+      .get<Data>(url)
+      .then((data) => {
+        setIsLoading(false)
+        setData(data.data)
+      })
+      .catch((err) => {
+        if (err instanceof AxiosError) {
+          console.log('🚀 ~ file: useFetch.tsx:41 ~ useEffect ~ err:', err)
+          setError(err)
+        }
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [url, refresh, fetcher])
 
   return {
     data,
