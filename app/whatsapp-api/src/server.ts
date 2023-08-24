@@ -4,7 +4,11 @@ import WhatsappInstance from './lib/whatsapp'
 
 const PORT = process.env.PORT
 
-export const client = new WhatsappInstance()
+const client = new WhatsappInstance()
+
+client.init()
+
+export { client }
 
 async function main() {
   if (PORT) {
