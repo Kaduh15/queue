@@ -4,7 +4,7 @@ export type Status = 'WAITING' | 'ABSENT' | 'DONE'
 
 export default class Queue extends BaseEntity {
   name: string
-  phoneNumber: string
+  phoneNumber?: string | null
   status: Status
 
   constructor({ id, name, createdAt, updatedAt, phoneNumber, status }: Queue) {

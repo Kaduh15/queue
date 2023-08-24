@@ -1,5 +1,6 @@
 import cors from 'cors'
 import express from 'express'
+import morgan from 'morgan'
 
 import 'express-async-errors'
 
@@ -20,10 +21,12 @@ class App {
 
   private config(): void {
     this.app.use(
-      cors({
-        origin: process.env.FRONTEND_URL,
-      }),
+      morgan(
+        ':method :url :status :res[content-length] - :response-time ms | :remote-addr',
+      ),
     )
+
+    this.app.use(cors())
     this.app.use(express.json())
   }
 

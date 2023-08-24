@@ -24,10 +24,10 @@ model Open {
   updatedAt DateTime @updatedAt
 }
 
-model queue {
+model Queue {
   id          Int      @id @default(autoincrement())
   name        String
-  phoneNumber String
+  phoneNumber String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   status      Status   @default(WAITING)

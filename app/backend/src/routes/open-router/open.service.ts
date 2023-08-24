@@ -23,14 +23,14 @@ export class OpenService {
         isOpen: false,
       })
 
-      return { isOpen: createOpen }
+      return createOpen
     }
 
     const updatedOpen = await this.model.update(1, {
       isOpen: !isOpen.isOpen,
     })
 
-    return { isOpen: updatedOpen }
+    return updatedOpen
   }
 
   async get() {
@@ -40,9 +40,9 @@ export class OpenService {
       const createOpen = await this.model.create({
         isOpen: false,
       })
-      return { isOpen: createOpen }
+      return createOpen
     }
 
-    return { isOpen }
+    return isOpen
   }
 }

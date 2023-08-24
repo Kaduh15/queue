@@ -17,6 +17,7 @@ export default ({ mode }) => {
     },
     server: {
       port: Number(process.env.VITE_PORT) || undefined,
+      host: Boolean(process.env.VITE_HOST) || undefined,
     },
   })
 }
