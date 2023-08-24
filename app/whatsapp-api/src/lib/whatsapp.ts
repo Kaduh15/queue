@@ -17,7 +17,7 @@ export default class WhatsappInstance {
 
   async init(pathAuthFile = 'auth') {
     const { state, saveCreds } = await useMultiFileAuthState(
-      `auth/${pathAuthFile}`,
+      `tokens/${pathAuthFile}`,
     )
 
     this.sock = makeWASocket({
