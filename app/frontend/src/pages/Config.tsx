@@ -1,40 +1,47 @@
+import { useEffect, useState } from 'react'
 import QRCode from 'react-qr-code'
 import { useNavigate } from 'react-router-dom'
 
 import { Skeleton } from '@/components/ui/skeleton'
-import useFetch from '@/hooks/useFetch'
-import { apiWhatsapp } from '@/lib/api'
+import { BASE_URL_WHATSAPP } from '@/lib/api'
 
 export default function Config() {
-  const { data, isLoading } = useFetch<{
+  const navigate = useNavigate()
+  const [data, setData] = useState<{
     qrCode: string
-    connected?: boolean
+    connected: boolean
   }>({
-    url: '/login',
-    initialData: { qrCode: '' },
-    fetcher: apiWhatsapp,
+    qrCode: '',
+    connected: false,
   })
 
-  const navigate = useNavigate()
+  useEffect(() => {
+    const eventSource = new EventSource(`${BASE_URL_WHATSAPP}/event/login`)
 
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
+    const updateData = (messageEvent: MessageEvent) => {
+      const parsedData = JSON.parse(messageEvent.data)
+      setData(parsedData)
+      if (parsedData.connected) {
+        navigate('/')
+        eventSource.close()
+      }
+    }
+
+    eventSource.addEventListener('login', updateData)
+
+    return () => eventSource.close()
+  }, [navigate])
 
   if (data.connected) {
     navigate('/')
   }
 
   return (
-    <>
-      <div className="w-screen h-screen flex justify-center items-center my-10">
-        {data?.qrCode && (
-          <QRCode value={data.qrCode} className="p-2 bg-white" />
-        )}
-        {!data?.qrCode && (
-          <Skeleton className="p-2 bg-white h-52 aspect-square" />
-        )}
-      </div>
-    </>
+    <div className="flex justify-center items-center my-10">
+      {data.qrCode && <QRCode value={data.qrCode} className="p-2 bg-white" />}
+      {!data.connected && (
+        <Skeleton className="p-2 bg-white h-52 aspect-square" />
+      )}
+    </div>
   )
 }

@@ -52,7 +52,7 @@ export default function Home() {
 
   const handleSendMessages = async (phone: string, text: string) => {
     try {
-      const { data } = await apiWhatsapp.get(`/login`)
+      const { data } = await apiWhatsapp.get(`/is-connected`)
 
       if (!data.connected) {
         toast({

@@ -1,17 +1,26 @@
 import { Router } from 'express'
 
+import { eventServer } from '../helps/events'
 import { client } from '../server'
 
 const whatsappRouter = Router()
 
-whatsappRouter.get('/login', async (req, res) => {
-  if (!client) {
-    return res.status(500).json({ error: 'Client not initialized' })
+whatsappRouter.get('/event/login', async (req, res) => {
+  const event = 'login'
+  eventServer.initEvent(res)
+
+  if (client.isConnected()) {
+    eventServer.sendEvent(event, { connected: true }, res)
   }
 
-  const result = await client.getQRCode()
+  const { qrCode } = await client.getQRCode()
 
-  return res.status(200).json(result)
+  eventServer.sendEvent(event, { qrCode }, res)
+  return eventServer.finishEvent(res)
+})
+
+whatsappRouter.get('/is-connected', async (req, res) => {
+  return res.status(200).json({ connected: client.isConnected() })
 })
 
 whatsappRouter.get('/send', async (req, res) => {

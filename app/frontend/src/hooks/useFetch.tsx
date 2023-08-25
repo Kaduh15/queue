@@ -37,7 +37,6 @@ export default function useFetch<Data = Record<string, string>>({
       })
       .catch((err) => {
         if (err instanceof AxiosError) {
-          console.log('🚀 ~ file: useFetch.tsx:41 ~ useEffect ~ err:', err)
           setError(err)
         }
       })
