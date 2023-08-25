@@ -24,7 +24,7 @@ export default class WhatsappInstance {
       auth: state,
       defaultQueryTimeoutMs: undefined,
       logger: pino({
-        level: 'silent',
+        // level: 'debug',
         transport: {
           target: 'pino-pretty',
           options: {
