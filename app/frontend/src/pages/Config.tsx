@@ -14,6 +14,7 @@ export default function Config() {
     qrCode: '',
     connected: false,
   })
+  console.log('🚀 ~ file: Config.tsx:11 ~ Config ~ data:', data)
 
   useEffect(() => {
     const eventSource = new EventSource(`${BASE_URL_WHATSAPP}/event/login`)
@@ -39,9 +40,7 @@ export default function Config() {
   return (
     <div className="flex justify-center items-center my-10">
       {data.qrCode && <QRCode value={data.qrCode} className="p-2 bg-white" />}
-      {!data.connected && (
-        <Skeleton className="p-2 bg-white h-52 aspect-square" />
-      )}
+      {!data.qrCode && <Skeleton className="p-2 bg-white h-52 aspect-square" />}
     </div>
   )
 }
