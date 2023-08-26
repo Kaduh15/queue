@@ -40,9 +40,7 @@ export default function Config() {
   return (
     <div className="flex justify-center items-center my-10">
       {data.qrCode && <QRCode value={data.qrCode} className="p-2 bg-white" />}
-      {data.connected && (
-        <Skeleton className="p-2 bg-white h-52 aspect-square" />
-      )}
+      {!data.qrCode && <Skeleton className="p-2 bg-white h-52 aspect-square" />}
     </div>
   )
 }
