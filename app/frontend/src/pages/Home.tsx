@@ -1,16 +1,18 @@
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
+
+import { apiQueue } from '@/api/queue'
+import { apiWhatsapp } from '@/api/whatsapp'
 
 import { ModeToggle } from '@/components/mode-toggle'
 import SheetAddCustomer, { FormSchema } from '@/components/SheetAddCustomer'
 import SheetLogin, { LoginFormSchema } from '@/components/SheetLogin'
 import TableQueue, { Customer } from '@/components/TableQueue'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
-import useFetch from '@/hooks/useFetch'
-import { api, apiWhatsapp } from '@/lib/api'
+
 import useAuthStore from '@/store/authStore'
 
 type Open = {
@@ -18,26 +20,59 @@ type Open = {
 }
 
 export default function Home() {
-  const {
-    data: customers,
-    refreshData,
-    optimistic,
-  } = useFetch<Customer[]>({
-    url: '/queue/today',
-    initialData: [],
-  })
-  const {
-    data: open,
-    refreshData: refreshOpen,
-    optimistic: optimisticOpen,
-  } = useFetch<Open>({
-    url: '/open',
-    initialData: {
-      isOpen: false,
+  const { data: queue } = useQuery({
+    queryKey: ['queue'],
+    queryFn: async () => {
+      const { data } = await apiQueue.get<Customer[]>('/queue/today')
+      return data
     },
+    initialData: () => [],
   })
 
-  const isOpen = open.isOpen || false
+  const { data: open, refetch } = useQuery({
+    queryKey: ['open'],
+    queryFn: async () => {
+      const { data } = await apiQueue.get<Open>('/open')
+      return data
+    },
+    initialData: () => ({ isOpen: false }),
+  })
+
+  const mutationToggleOpen = useMutation({
+    mutationFn: async () => {
+      const { data: response } = await apiQueue.post<Open>(
+        '/open',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+
+      return response
+    },
+
+    onSuccess: () => {
+      toast({
+        title: `${isOpen ? 'Fechado' : 'Aberto'} com sucesso`,
+        variant: 'default',
+        duration: 2000,
+      })
+      refetch()
+    },
+
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        console.log(err)
+        toast({
+          title: `Erro ao ${isOpen ? 'fechar' : 'abrir'} o atendimento`,
+          variant: 'destructive',
+          duration: 2000,
+        })
+      }
+    },
+  })
 
   const [token, setToken] = useAuthStore((store) => [
     store.store.token,
@@ -46,9 +81,9 @@ export default function Home() {
 
   const { toast } = useToast()
 
-  const nextCustomer = customers?.find(
-    (customer) => customer.status === 'WAITING',
-  )
+  const isOpen = open.isOpen
+
+  const nextCustomer = queue?.find((customer) => customer.status === 'WAITING')
 
   const handleSendMessages = async (phone: string, text: string) => {
     try {
@@ -82,14 +117,11 @@ export default function Home() {
 
   const handleSubmit = async (data: FormSchema) => {
     try {
-      const response = await api.post<Customer>('/queue', data, {
+      await apiQueue.post<Customer>('/queue', data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-
-      const newCustomers = [...(customers || []), response.data]
-      optimistic(newCustomers)
 
       toast({
         title: 'Cliente adicionado com sucesso',
@@ -110,7 +142,7 @@ export default function Home() {
 
   const handleLogin = async (data: LoginFormSchema) => {
     try {
-      const { data: response } = await api.post('/login', data)
+      const { data: response } = await apiQueue.post('/login', data)
       setToken(response.token)
 
       toast({
@@ -118,8 +150,6 @@ export default function Home() {
         variant: 'default',
         duration: 2000,
       })
-      refreshData()
-      refreshOpen()
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err)
@@ -132,41 +162,9 @@ export default function Home() {
     }
   }
 
-  const handleOpen = async () => {
-    const response = isOpen ? 'fechar' : 'abrir'
-
-    try {
-      const { data: response } = await api.post<Open>(
-        '/open',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-      optimisticOpen(response)
-
-      toast({
-        title: `${response.isOpen ? 'Aberto' : 'Fechado'} com sucesso`,
-        variant: 'default',
-        duration: 2000,
-      })
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        console.log(err)
-        toast({
-          title: `Erro ao ${response} cliente`,
-          variant: 'destructive',
-          duration: 2000,
-        })
-      }
-    }
-  }
-
   const handleUpdateStatus = async (id: number, status: string) => {
     try {
-      const { data } = await api.post(
+      const { data } = await apiQueue.post(
         `/queue/${id}?status=${status}`,
         {},
         {
@@ -177,7 +175,7 @@ export default function Home() {
       )
       let next = -1
 
-      const newCustomers = customers?.map((customer, index) => {
+      const newCustomers = queue?.map((customer, index) => {
         if (customer.id === id) {
           next = index + 1
 
@@ -188,7 +186,6 @@ export default function Home() {
         }
         return customer
       })
-      optimistic(newCustomers)
 
       const nextCustomer = newCustomers[next]
       if (!nextCustomer) return
@@ -224,7 +221,12 @@ export default function Home() {
     <main className="flex flex-col h-screen p-5 items-center gap-4">
       <div className="flex flex-row-reverse justify-between items-center w-full">
         <ModeToggle />
-        {token && <Switch onClick={handleOpen} checked={isOpen} />}
+        {token && (
+          <Switch
+            onClick={() => mutationToggleOpen.mutate()}
+            checked={isOpen}
+          />
+        )}
         {!token && <SheetLogin onSubmit={handleLogin} isOpen={isOpen} />}
         {token && <SheetAddCustomer onSubmit={handleSubmit} />}
       </div>
@@ -240,13 +242,13 @@ export default function Home() {
         </Card>
       )}
 
-      {!token && (
+      {/* {!token && (
         <>
           <Button onClick={refreshData}>Atualizar</Button>
         </>
-      )}
+      )} */}
 
-      <TableQueue customers={customers} onStatusChange={handleUpdateStatus} />
+      <TableQueue customers={queue} onStatusChange={handleUpdateStatus} />
       <Toaster />
     </main>
   )
