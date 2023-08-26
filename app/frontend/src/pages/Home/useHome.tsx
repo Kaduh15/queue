@@ -4,13 +4,9 @@ import { AxiosError } from 'axios'
 import { apiQueue } from '@/api/queue'
 import { apiWhatsapp } from '@/api/whatsapp'
 
-import { ModeToggle } from '@/components/mode-toggle'
-import SheetAddCustomer, { FormSchema } from '@/components/SheetAddCustomer'
-import SheetLogin, { LoginFormSchema } from '@/components/SheetLogin'
-import TableQueue, { Customer } from '@/components/TableQueue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Switch } from '@/components/ui/switch'
-import { Toaster } from '@/components/ui/toaster'
+import { FormSchema } from '@/components/SheetAddCustomer'
+import { LoginFormSchema } from '@/components/SheetLogin'
+import { Customer } from '@/components/TableQueue'
 import { useToast } from '@/components/ui/use-toast'
 
 import useAuthStore from '@/store/authStore'
@@ -19,23 +15,31 @@ type Open = {
   isOpen: boolean
 }
 
-export default function Home() {
-  const { data: queue } = useQuery({
+export default function useHome() {
+  const { data: queue, refetch: refetchQueue } = useQuery({
     queryKey: ['queue'],
     queryFn: async () => {
       const { data } = await apiQueue.get<Customer[]>('/queue/today')
       return data
     },
     initialData: () => [],
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
+    retryDelay: 2000,
   })
 
-  const { data: open, refetch } = useQuery({
+  const { data: open, refetch: refetchOpen } = useQuery({
     queryKey: ['open'],
     queryFn: async () => {
       const { data } = await apiQueue.get<Open>('/open')
       return data
     },
     initialData: () => ({ isOpen: false }),
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3,
+    retryDelay: 2000,
   })
 
   const mutationToggleOpen = useMutation({
@@ -59,7 +63,7 @@ export default function Home() {
         variant: 'default',
         duration: 2000,
       })
-      refetch()
+      refetchOpen()
     },
 
     onError: (err) => {
@@ -128,6 +132,8 @@ export default function Home() {
         variant: 'default',
         duration: 2000,
       })
+
+      refetchQueue()
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err)
@@ -175,6 +181,8 @@ export default function Home() {
       )
       let next = -1
 
+      refetchQueue()
+
       const newCustomers = queue?.map((customer, index) => {
         if (customer.id === id) {
           next = index + 1
@@ -217,39 +225,16 @@ export default function Home() {
     }
   }
 
-  return (
-    <main className="flex flex-col h-screen p-5 items-center gap-4">
-      <div className="flex flex-row-reverse justify-between items-center w-full">
-        <ModeToggle />
-        {token && (
-          <Switch
-            onClick={() => mutationToggleOpen.mutate()}
-            checked={isOpen}
-          />
-        )}
-        {!token && <SheetLogin onSubmit={handleLogin} isOpen={isOpen} />}
-        {token && <SheetAddCustomer onSubmit={handleSubmit} />}
-      </div>
-
-      {nextCustomer && (
-        <Card className="flex justify-center items-center p-4 gap-3">
-          <CardHeader className="p-0">
-            <CardTitle>Proximo:</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <p> {nextCustomer.name}</p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* {!token && (
-        <>
-          <Button onClick={refreshData}>Atualizar</Button>
-        </>
-      )} */}
-
-      <TableQueue customers={queue} onStatusChange={handleUpdateStatus} />
-      <Toaster />
-    </main>
-  )
+  return {
+    handleLogin,
+    handleSubmit,
+    handleUpdateStatus,
+    isOpen,
+    mutationToggleOpen,
+    nextCustomer,
+    queue,
+    refetchOpen,
+    refetchQueue,
+    token,
+  }
 }
