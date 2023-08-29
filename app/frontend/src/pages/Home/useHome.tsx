@@ -1,91 +1,24 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 
 import { apiQueue } from '@/api/queue'
 import { apiWhatsapp } from '@/api/whatsapp'
 
-import { FormSchema } from '@/components/SheetAddCustomer'
-import { LoginFormSchema } from '@/components/SheetLogin'
-import { Customer } from '@/components/TableQueue'
 import { useToast } from '@/components/ui/use-toast'
 
+import useFetchOpen from '@/hooks/useFetchOpen'
+import useFetchQueue from '@/hooks/useFetchQueue'
 import useAuthStore from '@/store/authStore'
 
-type Open = {
+export type Open = {
   isOpen: boolean
 }
 
 export default function useHome() {
-  const { data: queue, refetch: refetchQueue } = useQuery({
-    queryKey: ['queue'],
-    queryFn: async () => {
-      const { data } = await apiQueue.get<Customer[]>('/queue/today')
-      return data
-    },
-    initialData: () => [],
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    retry: 3,
-    retryDelay: 2000,
-  })
-
-  const { data: open, refetch: refetchOpen } = useQuery({
-    queryKey: ['open'],
-    queryFn: async () => {
-      const { data } = await apiQueue.get<Open>('/open')
-      return data
-    },
-    initialData: () => ({ isOpen: false }),
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    retry: 3,
-    retryDelay: 2000,
-  })
-
-  const mutationToggleOpen = useMutation({
-    mutationFn: async () => {
-      const { data: response } = await apiQueue.post<Open>(
-        '/open',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-
-      return response
-    },
-
-    onSuccess: () => {
-      toast({
-        title: `${isOpen ? 'Fechado' : 'Aberto'} com sucesso`,
-        variant: 'default',
-        duration: 2000,
-      })
-      refetchOpen()
-    },
-
-    onError: (err) => {
-      if (err instanceof AxiosError) {
-        console.log(err)
-        toast({
-          title: `Erro ao ${isOpen ? 'fechar' : 'abrir'} o atendimento`,
-          variant: 'destructive',
-          duration: 2000,
-        })
-      }
-    },
-  })
-
-  const [token, setToken] = useAuthStore((store) => [
-    store.store.token,
-    store.actions().setToken,
-  ])
+  const { data: queue, refetch: refetchQueue } = useFetchQueue()
+  const { data: open, refetch: refetchOpen } = useFetchOpen()
+  const [token] = useAuthStore((store) => [store.store.token])
 
   const { toast } = useToast()
-
-  const isOpen = open.isOpen
 
   const nextCustomer = queue?.find((customer) => customer.status === 'WAITING')
 
@@ -112,55 +45,6 @@ export default function useHome() {
         console.log(err)
         toast({
           title: 'Erro ao enviar mensagem para o cliente',
-          variant: 'destructive',
-          duration: 2000,
-        })
-      }
-    }
-  }
-
-  const handleSubmit = async (data: FormSchema) => {
-    try {
-      await apiQueue.post<Customer>('/queue', data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      toast({
-        title: 'Cliente adicionado com sucesso',
-        variant: 'default',
-        duration: 2000,
-      })
-
-      refetchQueue()
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        console.log(err)
-        toast({
-          title: 'Erro ao adicionar cliente',
-          variant: 'destructive',
-          duration: 2000,
-        })
-      }
-    }
-  }
-
-  const handleLogin = async (data: LoginFormSchema) => {
-    try {
-      const { data: response } = await apiQueue.post('/login', data)
-      setToken(response.token)
-
-      toast({
-        title: 'Cliente adicionado com sucesso',
-        variant: 'default',
-        duration: 2000,
-      })
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        console.log(err)
-        toast({
-          title: 'Erro ao adicionar cliente',
           variant: 'destructive',
           duration: 2000,
         })
@@ -226,12 +110,9 @@ export default function useHome() {
   }
 
   return {
-    handleLogin,
-    handleSubmit,
     handleUpdateStatus,
-    isOpen,
-    mutationToggleOpen,
     nextCustomer,
+    open,
     queue,
     refetchOpen,
     refetchQueue,

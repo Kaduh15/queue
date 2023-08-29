@@ -58,16 +58,6 @@ export default function TableQueue({
                         <Button>Atualizar</Button>
                       </AlertDialog.AlertDialogTrigger>
                       <AlertDialog.AlertDialogContent>
-                        <AlertDialog.AlertDialogHeader>
-                          <AlertDialog.AlertDialogTitle>
-                            Are you absolutely sure?
-                          </AlertDialog.AlertDialogTitle>
-                          <AlertDialog.AlertDialogDescription>
-                            This action cannot be undone. This will permanently
-                            delete your account and remove your data from our
-                            servers.
-                          </AlertDialog.AlertDialogDescription>
-                        </AlertDialog.AlertDialogHeader>
                         <AlertDialog.AlertDialogFooter className="space-y-1">
                           <AlertDialog.AlertDialogCancel>
                             Cancel
@@ -100,16 +90,6 @@ export default function TableQueue({
                             <Button>Atualizar</Button>
                           </AlertDialog.AlertDialogTrigger>
                           <AlertDialog.AlertDialogContent>
-                            <AlertDialog.AlertDialogHeader>
-                              <AlertDialog.AlertDialogTitle>
-                                Are you absolutely sure?
-                              </AlertDialog.AlertDialogTitle>
-                              <AlertDialog.AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete your account and remove your
-                                data from our servers.
-                              </AlertDialog.AlertDialogDescription>
-                            </AlertDialog.AlertDialogHeader>
                             <AlertDialog.AlertDialogFooter className="space-y-1">
                               <AlertDialog.AlertDialogCancel>
                                 Cancel
