@@ -3,7 +3,8 @@ import jwt, { JwtPayload, Secret } from 'jsonwebtoken'
 
 dotenv.config()
 
-type AuthPayload<PayloadType = object> = PayloadType & JwtPayload
+type AuthPayload<PayloadType = Record<string, unknown>> = PayloadType &
+  JwtPayload
 
 export class Auth {
   private static readonly secret = process.env.JWT_SECRET as Secret
