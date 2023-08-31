@@ -14,7 +14,7 @@
     "db:seed": "prisma db seed",
     "test": "vitest dev",
     "test:ui": "vitest --ui",
-    "coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma",
