@@ -20,7 +20,7 @@ export class AuthService {
       throw new NotFoundError('User not found')
     }
 
-    const isPasswordValid = Encrypt.compare(data.password, user.password)
+    const isPasswordValid = await Encrypt.compare(data.password, user.password)
 
     if (!isPasswordValid) {
       throw new UnauthorizedError('Invalid password')

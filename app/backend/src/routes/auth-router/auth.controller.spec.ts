@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
+import Sinon from 'sinon'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { Auth } from '@/lib/jsonwebtoken'
 import { UserRepositoryInMemory } from '@/repositories/user-repository/user-in-memory.repository'
 
 import { AuthController } from './auth.controller'
@@ -23,9 +23,9 @@ describe('AuthController', () => {
     expect(authController).toBeInstanceOf(AuthController)
   })
 
-  describe('login', async () => {
+  describe('Method - login', async () => {
     beforeEach(() => {
-      vi.fn().mockClear()
+      Sinon.restore()
     })
 
     it('should return token', async () => {
@@ -49,12 +49,17 @@ describe('AuthController', () => {
         json: vi.fn(),
       } as unknown as Response
 
-      Auth.sign = vi.fn().mockReturnValue('token')
+      Sinon.stub(authService, 'login').resolves({
+        token: 'token',
+      })
 
       await authController.login(req, res)
 
       expect(res.json).toBeCalled()
       expect(res.json).toBeCalledWith({ token: 'token' })
+
+      expect(res.status).toBeCalled()
+      expect(res.status).toBeCalledWith(200)
     })
   })
 })
