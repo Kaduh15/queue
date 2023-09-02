@@ -1,5 +1,9 @@
 'use client'
 
+import { format } from 'date-fns'
+import { Calendar as CalendarIcon } from 'lucide-react'
+import { forwardRef } from 'react'
+
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -7,10 +11,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+
 import { cn } from '@/lib/utils'
-import { format } from 'date-fns'
-import { Calendar as CalendarIcon } from 'lucide-react'
-import { forwardRef } from 'react'
 
 export const DatePicker = forwardRef<
   HTMLDivElement,

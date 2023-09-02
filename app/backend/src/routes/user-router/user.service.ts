@@ -15,7 +15,7 @@ export class UserService {
     const hasUser = await this.model.getByEmail(data.email)
 
     if (hasUser) {
-      throw new ConflictError('User already exists')
+      throw new ConflictError('Email already exists')
     }
 
     const hashedPassword = await this.encrypt.hash(data.password)

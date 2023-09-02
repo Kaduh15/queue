@@ -21,6 +21,8 @@ module.exports = {
           newlinesBetween: 'always',
           groups: [
               'module',
+              '/@/api/',
+              '/@/components/',
               '/@//',
               ['parent', 'sibling', 'index'],
           ],

@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import Sinon from 'sinon'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 import { Encrypt } from '@/lib/bcryptjs'
 import { Auth } from '@/lib/jsonwebtoken'
@@ -21,9 +22,9 @@ describe('AuthService', () => {
     expect(authService).toBeInstanceOf(AuthService)
   })
 
-  describe('login', async () => {
+  describe('Method - login', async () => {
     beforeEach(() => {
-      vi.fn().mockClear()
+      Sinon.restore()
     })
 
     it('should return a token if email and password are correct', async () => {
@@ -37,8 +38,8 @@ describe('AuthService', () => {
         password: loginInput.password,
       })
 
-      Encrypt.compare = vi.fn().mockReturnValue(true)
-      Auth.sign = vi.fn().mockReturnValue('token')
+      Sinon.stub(Encrypt, 'compare').resolves(true)
+      Sinon.stub(Auth, 'sign').returns('token')
 
       const token = await authService.login(loginInput)
 
@@ -58,7 +59,7 @@ describe('AuthService', () => {
     })
 
     it('should throw an error if password is invalid', async () => {
-      Encrypt.compare = vi.fn().mockReturnValue(false)
+      Sinon.stub(Encrypt, 'compare').resolves(false)
 
       const promise = authService.login({
         email: 'any_email',

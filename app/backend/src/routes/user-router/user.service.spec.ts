@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import Sinon from 'sinon'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 import User from '@/entities/user.entity'
 import { UserRepositoryInMemory } from '@/repositories/user-repository/user-in-memory.repository'
@@ -11,6 +12,10 @@ describe('UserService', () => {
 
   const userService = new UserService(userRepository)
 
+  beforeEach(() => {
+    Sinon.restore()
+  })
+
   it('should be defined', () => {
     expect(userService).toBeDefined()
   })
@@ -21,11 +26,7 @@ describe('UserService', () => {
 
   describe('create', async () => {
     beforeEach(() => {
-      vi.useFakeTimers()
-    })
-
-    afterEach(() => {
-      vi.useRealTimers()
+      Sinon.restore()
     })
 
     it('should create a user with success', async () => {
@@ -36,16 +37,20 @@ describe('UserService', () => {
         role: 'USER',
       }
 
-      vi.setSystemTime(new Date('2021-01-01T00:00:00.000Z'))
-
       const userOutput: Omit<User, 'password'> = {
         id: 1,
         email: userInput.email,
         name: userInput.name,
         role: userInput.role,
-        createdAt: new Date('2021-01-01T00:00:00.000Z'),
-        updatedAt: new Date('2021-01-01T00:00:00.000Z'),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
+
+      Sinon.stub(userRepository, 'getByEmail').resolves(undefined)
+      Sinon.stub(userRepository, 'create').resolves({
+        ...userOutput,
+        password: 'hashedPassword',
+      })
 
       const user = await userService.create(userInput)
 
@@ -67,13 +72,16 @@ describe('UserService', () => {
         role: 'USER',
       }
 
-      await userService.create({
+      Sinon.stub(userRepository, 'getByEmail').resolves({
+        id: 1,
         ...userInput,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       })
 
-      await expect(userService.create(userInput)).rejects.toThrow(
-        'User already exists',
-      )
+      const userPromise = userService.create(userInput)
+
+      await expect(userPromise).rejects.toThrow('Email already exists')
     })
   })
 })

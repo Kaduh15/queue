@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes'
+
 import { HandlerFunction } from '@/types/handler-function'
 
 import { AuthService } from './auth.service'
@@ -13,6 +15,6 @@ export class AuthController {
     const { email, password } = req.body
     const token = await this.service.login({ email, password })
 
-    return res.json(token)
+    return res.status(StatusCodes.OK).json(token)
   }
 }

@@ -1,14 +1,6 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, Trash } from 'lucide-react'
 import React from 'react'
@@ -20,6 +12,16 @@ import {
   useForm,
 } from 'react-hook-form'
 import { z } from 'zod'
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
+import { cn } from '@/lib/utils'
 
 import {
   Accordion,
