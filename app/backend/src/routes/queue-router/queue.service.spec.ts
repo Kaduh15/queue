@@ -1,7 +1,7 @@
 import Sinon from 'sinon'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, test } from 'vitest'
 
-import Queue from '@/entities/queue.entity'
+import Queue, { Status } from '@/entities/queue.entity'
 import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
 import { QueueRepositoryInMemory } from '@/repositories/queue-repository/queue-in-memory.repository'
 
@@ -12,19 +12,6 @@ describe('QueueService', () => {
   const queueRepository = new QueueRepositoryInMemory()
   const openRepository = new OpenRepositoryInMemory()
   const queueService = new QueueService(queueRepository, openRepository)
-
-  openRepository.create({ isOpen: false })
-
-  beforeEach(() => {
-    vi.resetAllMocks()
-    vi.useRealTimers()
-
-    openRepository.update(1, {
-      isOpen: false,
-    })
-
-    queueRepository.deleteAll()
-  })
 
   it('Should be defined', () => {
     expect(queueService).toBeDefined()
@@ -92,6 +79,37 @@ describe('QueueService', () => {
 
       expect(queues).toHaveLength(2)
       expect(queues[0]).toHaveProperty('id', 1)
+    })
+  })
+
+  describe('updateStatus', () => {
+    beforeEach(() => {
+      Sinon.restore()
+    })
+
+    test.each<[Status, Status]>([
+      ['DONE', 'DONE'],
+      ['ABSENT', 'ABSENT'],
+    ])('should update status to %s', async (_chave, params) => {
+      const queueInput: Queue = {
+        id: 1,
+        name: 'Any Name',
+        phoneNumber: '99999999999',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        status: 'WAITING',
+      }
+
+      Sinon.stub(queueRepository, 'getById').resolves(queueInput)
+
+      Sinon.stub(queueRepository, 'update').resolves({
+        ...queueInput,
+        status: params,
+      })
+
+      const queueUpdate = await queueService.updateStatus(1, params)
+
+      expect(queueUpdate).toHaveProperty('status', params)
     })
   })
 })
