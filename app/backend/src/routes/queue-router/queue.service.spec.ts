@@ -1,5 +1,5 @@
 import Sinon from 'sinon'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import Queue from '@/entities/queue.entity'
 import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
@@ -36,11 +36,7 @@ describe('QueueService', () => {
 
   describe('create', () => {
     beforeEach(() => {
-      vi.useFakeTimers()
-    })
-
-    afterEach(() => {
-      vi.useRealTimers()
+      Sinon.restore()
     })
 
     it('Should create a queue', async () => {
@@ -49,19 +45,21 @@ describe('QueueService', () => {
         phoneNumber: '99999999999',
       }
 
-      openRepository.update(1, {
-        isOpen: true,
-      })
-
-      vi.setSystemTime(new Date('2021-01-01T00:00:00.000Z'))
-
-      const queueOutput = {
+      const queueOutput: Queue = {
         id: 1,
         ...queueInput,
         createdAt: new Date(),
         updatedAt: new Date(),
         status: 'WAITING',
       }
+
+      Sinon.stub(queueRepository, 'create').resolves(queueOutput)
+      Sinon.stub(openRepository, 'getById').resolves({
+        id: 1,
+        isOpen: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
 
       const queue = await queueService.create(queueInput)
 
