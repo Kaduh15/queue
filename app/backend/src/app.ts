@@ -40,6 +40,9 @@ class App {
     this.app.use('/open', openRouter)
     this.app.use('/queue', queueRouter)
 
+    this.app.use('*', (_req, res) => {
+      res.status(404).json({ message: 'Not found' })
+    })
     this.app.use(errorMiddleware)
   }
 
