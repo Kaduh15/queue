@@ -1,4 +1,4 @@
-import EfiPay from 'sdk-typescript-apis-efi'
+import EfiPay from 'sdk-api-efi'
 
 import {
   CERTIFICADO,
