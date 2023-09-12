@@ -1,11 +1,16 @@
 import cors from 'cors'
 import express from 'express'
-import morgan from 'morgan'
 
 import 'express-async-errors'
 
 import errorMiddleware from './middlewares/error.middleware'
-import { authRouter, openRouter, queueRouter, userRouter } from './routes'
+import {
+  authRouter,
+  openRouter,
+  paymentRouter,
+  queueRouter,
+  userRouter,
+} from './routes'
 
 import 'dotenv/config'
 
@@ -20,12 +25,6 @@ class App {
   }
 
   private config(): void {
-    this.app.use(
-      morgan(
-        ':method :url :status :res[content-length] - :response-time ms | :remote-addr',
-      ),
-    )
-
     this.app.use(cors())
     this.app.use(express.json())
   }
@@ -39,6 +38,7 @@ class App {
     this.app.use('/login', authRouter)
     this.app.use('/open', openRouter)
     this.app.use('/queue', queueRouter)
+    this.app.use('/payment', paymentRouter)
 
     this.app.use('*', (_req, res) => {
       res.status(404).json({ message: 'Not found' })
