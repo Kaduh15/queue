@@ -22,12 +22,16 @@ export class PaymentController {
     return res.status(200).json(response)
   }
 
-  healthCheck = async (_req: Request, res: Response, next: NextFunction) => {
+  healthCheck = async (req: Request, res: Response, next: NextFunction) => {
+    if (req.path.includes('webhook')) {
+      return next()
+    }
     const isHealth = await this.service.healthCheck()
 
     if (isHealth) {
       return next()
     }
+
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: 'Payment service is down',
     })
