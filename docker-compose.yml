@@ -35,11 +35,8 @@ services:
       - ./app/backend/src:/app-backend/src
     depends_on:
       - db
-    environment:
-      - PORT=3001
-      - DATABASE_URL=postgres://root:root@db:5432/queue
-      - JWT_SECRET="SENHACECRETA"
-      - FRONTEND_URL=http://frontend:3000
+    env_file:
+      - ./app/backend/.env
     healthcheck:
       test: ["CMD", "lsof", "-t", "-i:3001"] # Caso utilize outra porta interna para o back, altere ela aqui também
       timeout: 10s
