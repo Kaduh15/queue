@@ -1,10 +1,13 @@
 import { HamburgerMenuIcon } from '@radix-ui/react-icons'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { z } from 'zod'
 
 import { apiQueue } from '@/api/queue'
 
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
 import useFetchOpen from '@/hooks/useFetchOpen'
 import useFetchQueue from '@/hooks/useFetchQueue'
 import { Open } from '@/pages/Home/useHome'
@@ -12,15 +15,30 @@ import useAuthStore from '@/store/authStore'
 
 import { ModeToggle } from '../mode-toggle'
 import OpenElement from '../Open'
-import SheetAddCustomer, { FormSchema } from '../SheetAddCustomer'
+import SheetAddCustomer, {
+  FormSchema as FormLoginSchema,
+} from '../SheetAddCustomer'
 import SheetLogin, { LoginFormSchema } from '../SheetLogin'
 import { Customer } from '../TableQueue'
+import AutoForm, { AutoFormSubmit } from '../ui/auto-form'
 import { Button } from '../ui/button'
+import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { Switch } from '../ui/switch'
 import { useToast } from '../ui/use-toast'
 
+const formSchema = z.object({
+  name: z.string().nonempty(),
+  phoneNumber: z.string().nonempty(),
+})
+
+export type FormSchema = z.infer<typeof formSchema>
+
 export function Header() {
+  const [paymentStatus, setPaymentStatus] = useState(false)
+  const [qrCode64, setQrCode64] = useState('')
+  const [qrCodeCopy, setQrCodeCopy] = useState('')
+  const [, copy] = useCopyToClipboard()
   const { refetch: refetchQueue } = useFetchQueue()
   const { data: open, refetch: refetchOpen } = useFetchOpen()
 
@@ -70,7 +88,7 @@ export function Header() {
     },
   })
 
-  const handleSubmit = async (data: FormSchema) => {
+  const handleSubmitLogin = async (data: FormLoginSchema) => {
     try {
       await apiQueue.post<Customer>('/queue', data, {
         headers: {
@@ -123,7 +141,41 @@ export function Header() {
     removeToken()
   }
 
+  const handleSubmit = async (data: FormSchema) => {
+    try {
+      const response = await apiQueue.post('/payment', data)
+      setQrCode64(response.data?.imagemQrcode)
+      setQrCodeCopy(response.data?.qrcode)
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response)
+      }
+    }
+  }
+
   const navigate = useNavigate()
+
+  useEffect(() => {
+    apiQueue
+      .get('/payment/health')
+      .then(() => setPaymentStatus(true))
+      .catch(() => setPaymentStatus(false))
+  }, [])
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+
+    if (qrCode64) {
+      timeoutId = setTimeout(() => {
+        setQrCode64('')
+        clearTimeout(timeoutId)
+      }, 1000 * 60)
+    }
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [qrCode64])
 
   return (
     <div className="flex flex-row-reverse justify-between items-center w-full">
@@ -159,8 +211,43 @@ export function Header() {
           </span>
         </SheetContent>
       </Sheet>
+      {!token && paymentStatus && open.isOpen && (
+        <>
+          <Dialog>
+            <DialogTrigger>
+              <Button className="text-white">Entrar na Fila</Button>
+            </DialogTrigger>
+            <DialogContent className="flex justify-center items-center">
+              {qrCode64 && (
+                <div className="w-[90vw] flex flex-col p-3 justify-center items-center gap-4">
+                  <img src={qrCode64} alt="qrcode" className="w-3/4" />
+                  <p className="break-words w-full border p-2">{qrCodeCopy}</p>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      copy(qrCodeCopy)
+                      toast({
+                        title: 'QrCode Copiado com Sucesso!',
+                        variant: 'default',
+                        duration: 1000,
+                      })
+                    }}
+                  >
+                    Copiar
+                  </Button>
+                </div>
+              )}
+              {!qrCode64 && (
+                <AutoForm formSchema={formSchema} onSubmit={handleSubmit}>
+                  <AutoFormSubmit />
+                </AutoForm>
+              )}
+            </DialogContent>
+          </Dialog>
+        </>
+      )}
       {!token && <OpenElement isOpen={isOpen} />}
-      {token && <SheetAddCustomer onSubmit={handleSubmit} />}
+      {token && <SheetAddCustomer onSubmit={handleSubmitLogin} />}
     </div>
   )
 }
