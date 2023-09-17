@@ -26,6 +26,21 @@ export class QueuePrismaRepository implements QueueRepository {
   ): Promise<Queue> {
     const allToday = await this.getToday()
 
+    const hasInService = allToday.some((customer) => {
+      return customer.status === 'IN_SERVICE'
+    })
+
+    if (!hasInService) {
+      const queue = await prisma.queue.create({
+        data: {
+          ...data,
+          status: 'IN_SERVICE',
+        },
+      })
+
+      return new Queue(queue)
+    }
+
     if (allToday.some((customer) => customer.name === data.name)) {
       throw new ConflictError('Customer already exists')
     }
