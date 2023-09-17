@@ -63,8 +63,8 @@ export default function useHome() {
           },
         },
       )
-      let next: number = -1
-      let sendIndex = 0
+      let next = -1
+      let sendIndex = -1
 
       refetchQueue()
 
