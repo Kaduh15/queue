@@ -8,9 +8,10 @@ enum Status {
   WAITING = 'ESPERANDO',
   ABSENT = 'AUSENTE',
   DONE = 'ATENDIDO',
+  IN_SERVICE = 'CORTANDO',
 }
 
-type TStatus = 'WAITING' | 'ABSENT' | 'DONE'
+type TStatus = 'WAITING' | 'ABSENT' | 'DONE' | 'IN_SERVICE'
 
 export type Customer = {
   id: number
@@ -51,7 +52,7 @@ export default function TableQueue({
                 </Table.TableCell>
                 <Table.TableCell>{customer.name}</Table.TableCell>
                 <Table.TableCell>{Status[customer.status]}</Table.TableCell>
-                {index === 0 && customer.status === 'WAITING' && token && (
+                {index === 0 && customer.status === 'IN_SERVICE' && token && (
                   <Table.TableCell>
                     <AlertDialog.AlertDialog>
                       <AlertDialog.AlertDialogTrigger asChild>
@@ -81,8 +82,8 @@ export default function TableQueue({
                 )}
                 {index > 0 &&
                   token &&
-                  customers[index - 1].status !== 'WAITING' &&
-                  customer.status === 'WAITING' && (
+                  customers[index - 1].status !== 'IN_SERVICE' &&
+                  customer.status === 'IN_SERVICE' && (
                     <Table.TableCell>
                       <Table.TableCell>
                         <AlertDialog.AlertDialog>

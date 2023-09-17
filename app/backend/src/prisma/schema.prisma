@@ -36,6 +36,7 @@ model Queue {
 enum Status {
   WAITING
   ABSENT
+  IN_SERVICE
   DONE
 }
 

@@ -1,6 +1,6 @@
 import { BaseEntity } from './base.entity'
 
-export type Status = 'WAITING' | 'ABSENT' | 'DONE'
+export type Status = 'WAITING' | 'ABSENT' | 'DONE' | 'IN_SERVICE'
 
 export default class Queue extends BaseEntity {
   name: string

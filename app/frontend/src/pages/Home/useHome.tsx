@@ -63,7 +63,8 @@ export default function useHome() {
           },
         },
       )
-      let next = -1
+      let next: number = -1
+      let sendIndex = 0
 
       refetchQueue()
 
@@ -76,10 +77,20 @@ export default function useHome() {
             status: data.status,
           }
         }
+
+        if (index === next) {
+          sendIndex = index + 1
+          next = -1
+
+          return {
+            ...customer,
+            status: 'IN_SERVICE',
+          }
+        }
         return customer
       })
 
-      const nextCustomer = newCustomers[next]
+      const nextCustomer = newCustomers[sendIndex]
       if (!nextCustomer) return
 
       if (nextCustomer && nextCustomer.phoneNumber && status === 'DONE') {

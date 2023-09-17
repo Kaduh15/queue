@@ -39,6 +39,15 @@ export class QueueService {
       status,
     })
 
+    const next = (await this.model.getToday()).find((customer) => {
+      return customer.status === 'WAITING'
+    })
+    if (next?.id) {
+      await this.model.update(next.id, {
+        status: 'IN_SERVICE',
+      })
+    }
+
     return updateCustomer
   }
 }
