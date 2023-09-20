@@ -116,11 +116,13 @@ class Payment {
   }
 
   async getWebhook(key: string = EFI_KEY_PIX) {
-    const webhook = await this.#payment.pixDetailWebhook({
-      chave: key,
-    })
+    try {
+      const webhook = await this.#payment.pixDetailWebhook({
+        chave: key,
+      })
 
-    return webhook
+      return webhook
+    } catch {}
   }
 
   async configWebhook(key: string = EFI_KEY_PIX) {
