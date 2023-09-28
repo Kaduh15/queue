@@ -8,11 +8,17 @@ export class OpenService {
   }
 
   async create() {
+    const isOpenExist = await this.model.getById(1)
+
+    if (isOpenExist) {
+      return isOpenExist
+    }
+
     const isOpen = await this.model.create({
       isOpen: false,
     })
 
-    return { isOpen }
+    return isOpen
   }
 
   async toggle() {
