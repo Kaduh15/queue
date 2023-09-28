@@ -1,6 +1,6 @@
 # Queue 🕑
 
-O Queue é uma plataforma revolucionária que simplifica o gerenciamento de filas em barbearias, permitindo que os clientes entrem na fila, recebam notificações no WhatsApp e efetuem pagamentos, tudo de forma remota.
+O Queue é uma plataforma que simplifica o gerenciamento de filas em barbearias, permitindo que os clientes entrem na fila, recebam notificações no WhatsApp e efetuem pagamentos, tudo de forma remota.
 
 ## Motivação 🚀
 
