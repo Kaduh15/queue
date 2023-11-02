@@ -6,8 +6,8 @@ import Queue from '@/entities/queue.entity'
 import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
 import { QueueRepositoryInMemory } from '@/repositories/queue-repository/queue-in-memory.repository'
 
+import { QueueService } from '../../services/queue.service'
 import { QueueController } from './queue.controller'
-import { QueueService } from './queue.service'
 import { CreateQueueSchema } from './schemas/queue-create.schema'
 
 describe('QueueController', () => {

@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { HandlerFunction } from '@/types/handler-function'
 
-import { OpenService } from './open.service'
+import { OpenService } from '../../services/open.service'
 
 export class OpenController {
   private service: OpenService

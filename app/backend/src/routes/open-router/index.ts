@@ -3,8 +3,8 @@ import { Router } from 'express'
 import authMiddleware from '@/middlewares/auth.middleware'
 import { OpenPrismaRepository } from '@/repositories/open-repository/open-prisma.repository'
 
+import { OpenService } from '../../services/open.service'
 import { OpenController } from './open.controller'
-import { OpenService } from './open.service'
 
 export const openRepository = new OpenPrismaRepository()
 const openService = new OpenService(openRepository)

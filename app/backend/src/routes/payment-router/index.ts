@@ -5,8 +5,8 @@ import bodyValidationMiddleware from '@/middlewares/body-validation.middleware'
 import { OpenPrismaRepository } from '@/repositories/open-repository/open-prisma.repository'
 import { QueuePrismaRepository } from '@/repositories/queue-repository/queue-prisma.repository'
 
+import { PaymentService } from '../../services/payment.service'
 import { PaymentController } from './payment.controller'
-import { PaymentService } from './payment.service'
 import { createPaymentSchema } from './schemas/create-payment.schema'
 
 const queueRepository = new QueuePrismaRepository()

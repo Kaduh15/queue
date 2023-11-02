@@ -7,8 +7,8 @@ import { QueuePrismaRepository } from '@/repositories/queue-repository/queue-pri
 
 import { openRepository } from '../open-router'
 
+import { QueueService } from '../../services/queue.service'
 import { QueueController } from './queue.controller'
-import { QueueService } from './queue.service'
 import { createQueueSchema } from './schemas/queue-create.schema'
 import { updateStatusQuerySchema } from './schemas/queue-query-update-status'
 

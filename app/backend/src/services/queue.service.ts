@@ -3,7 +3,7 @@ import { OpenRepository } from '@/repositories/open-repository/open.repository'
 import { QueueRepository } from '@/repositories/queue-repository/queue.repository'
 import { BadRequestError, NotFoundError } from '@/utils/http-errors'
 
-import { CreateQueueSchema } from './schemas/queue-create.schema'
+import { CreateQueueSchema } from '../routes/queue-router/schemas/queue-create.schema'
 
 export class QueueService {
   model: QueueRepository

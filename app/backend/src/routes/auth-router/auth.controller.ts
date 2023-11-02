@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { HandlerFunction } from '@/types/handler-function'
 
-import { AuthService } from './auth.service'
+import { AuthService } from '../../services/auth.service'
 
 export class AuthController {
   private service: AuthService
