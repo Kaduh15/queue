@@ -3,10 +3,10 @@ import { Router } from 'express'
 import bodyValidation from '@/middlewares/body-validation.middleware'
 import { UserPrismaRepository } from '@/repositories/user-repository/user-prisma.repository'
 
+import { UserController } from '../../controllers/user.controller'
 import { UserService } from '../../services/user.service'
 
 import { createUserSchema } from './schemas/user-create.schema'
-import { UserController } from './user.controller'
 
 export const userRepository = new UserPrismaRepository()
 

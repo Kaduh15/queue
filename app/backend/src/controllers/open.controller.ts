@@ -1,8 +1,7 @@
+import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
-import { HandlerFunction } from '@/types/handler-function'
-
-import { OpenService } from '../../services/open.service'
+import { OpenService } from '../services/open.service'
 
 export class OpenController {
   private service: OpenService
@@ -11,13 +10,13 @@ export class OpenController {
     this.service = service
   }
 
-  toggle: HandlerFunction = async (req, res) => {
+  toggle = async (req: Request, res: Response) => {
     const isOpen = await this.service.toggle()
 
     return res.status(StatusCodes.OK).json(isOpen)
   }
 
-  get: HandlerFunction = async (req, res) => {
+  get = async (req: Request, res: Response) => {
     const isOpen = await this.service.get()
 
     return res.status(StatusCodes.OK).json(isOpen)

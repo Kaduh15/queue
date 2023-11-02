@@ -1,8 +1,7 @@
+import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
-import { HandlerFunction } from '@/types/handler-function'
-
-import { AuthService } from '../../services/auth.service'
+import { AuthService } from '../services/auth.service'
 
 export class AuthController {
   private service: AuthService
@@ -11,7 +10,7 @@ export class AuthController {
     this.service = service
   }
 
-  login: HandlerFunction = async (req, res) => {
+  login = async (req: Request, res: Response) => {
     const { email, password } = req.body
     const token = await this.service.login({ email, password })
 

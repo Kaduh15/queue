@@ -6,10 +6,10 @@ import Queue from '@/entities/queue.entity'
 import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
 import { QueueRepositoryInMemory } from '@/repositories/queue-repository/queue-in-memory.repository'
 
-import { QueueService } from '../../services/queue.service'
+import { CreateQueueSchema } from '../routes/queue-router/schemas/queue-create.schema'
+import { QueueService } from '../services/queue.service'
 
 import { QueueController } from './queue.controller'
-import { CreateQueueSchema } from './schemas/queue-create.schema'
 
 describe('QueueController', () => {
   const queueRepository = new QueueRepositoryInMemory()
