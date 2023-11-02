@@ -6,9 +6,8 @@ import { OpenPrismaRepository } from '@/repositories/open-repository/open-prisma
 import { QueuePrismaRepository } from '@/repositories/queue-repository/queue-prisma.repository'
 
 import { PaymentController } from '../../controllers/payment.controller'
+import { createPaymentSchema } from '../../schemas/create-payment.schema'
 import { PaymentService } from '../../services/payment.service'
-
-import { createPaymentSchema } from './schemas/create-payment.schema'
 
 const queueRepository = new QueuePrismaRepository()
 const openRepository = new OpenPrismaRepository()

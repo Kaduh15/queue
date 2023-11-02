@@ -6,7 +6,7 @@ import { Auth } from '@/lib/jsonwebtoken'
 import { UserRepositoryInMemory } from '@/repositories/user-repository/user-in-memory.repository'
 import { NotFoundError, UnauthorizedError } from '@/utils/http-errors'
 
-import { AuthLoginSchema } from '../routes/auth-router/schemas/auth-login.schema'
+import { AuthLoginSchema } from '../schemas/auth-login.schema'
 
 import { AuthService } from './auth.service'
 

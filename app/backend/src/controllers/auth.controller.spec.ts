@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { UserRepositoryInMemory } from '@/repositories/user-repository/user-in-memory.repository'
 
-import { AuthLoginSchema } from '../routes/auth-router/schemas/auth-login.schema'
+import { AuthLoginSchema } from '../schemas/auth-login.schema'
 import { AuthService } from '../services/auth.service'
 
 import { AuthController } from './auth.controller'

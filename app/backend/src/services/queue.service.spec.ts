@@ -5,7 +5,7 @@ import Queue, { Status } from '@/entities/queue.entity'
 import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
 import { QueueRepositoryInMemory } from '@/repositories/queue-repository/queue-in-memory.repository'
 
-import { CreateQueueSchema } from '../routes/queue-router/schemas/queue-create.schema'
+import { CreateQueueSchema } from '../schemas/queue-create.schema'
 
 import { QueueService } from './queue.service'
 

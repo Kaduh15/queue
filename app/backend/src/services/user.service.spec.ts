@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import User from '@/entities/user.entity'
 import { UserRepositoryInMemory } from '@/repositories/user-repository/user-in-memory.repository'
 
-import { CreateUserSchema } from '../routes/user-router/schemas/user-create.schema'
+import { CreateUserSchema } from '../schemas/user-create.schema'
 
 import { UserService } from './user.service'
 
