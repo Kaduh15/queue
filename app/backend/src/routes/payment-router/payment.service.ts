@@ -1,16 +1,19 @@
 import { OpenRepository } from '@/repositories/open-repository/open.repository'
 import { QueueRepository } from '@/repositories/queue-repository/queue.repository'
 import { BadRequestError } from '@/utils/http-errors'
-import paymentApi from '@/utils/payment'
+import PaymentApi from '@/utils/payment'
 
 import { CreatePaymentSchema } from './schemas/create-payment.schema'
 
 export class PaymentService {
   #queue: QueueRepository
   #open: OpenRepository
+  #paymentApi: PaymentApi
+
   constructor(queue: QueueRepository, open: OpenRepository) {
     this.#queue = queue
     this.#open = open
+    this.#paymentApi = new PaymentApi()
   }
 
   async create({ name, phoneNumber, valor }: CreatePaymentSchema) {
@@ -28,56 +31,31 @@ export class PaymentService {
       throw new BadRequestError('Customer already paid')
     }
 
-    const response = await paymentApi.generateQrCode({
-      valor: {
-        original: valor,
+    const response = await this.#paymentApi.createPayment({
+      transaction_amount: Number(valor),
+      metadata: {
+        name,
+        phone_number: phoneNumber,
       },
-      infoAdicionais: [
-        {
-          nome: 'name',
-          valor: name,
-        },
-        {
-          nome: 'phoneNumber',
-          valor: phoneNumber,
-        },
-      ],
     })
 
     return response
   }
 
-  async healthCheck() {
-    try {
-      await paymentApi.configWebhook()
-      return true
-    } catch (err) {
-      return false
-    }
-  }
+  async confirmPayment(paymentId: string) {
+    const response = await this.#paymentApi.consultPix(paymentId)
 
-  async confirmPayment(txid: string) {
-    const response = await paymentApi.consultPix(txid)
-
-    if (response?.status !== 'CONCLUIDA') {
+    if (response?.status !== 'approved') {
       throw new BadRequestError('Pix payment not completed')
     }
 
-    const { infoAdicionais } = response
-
-    const customer = infoAdicionais.reduce((acc, curr) => {
-      if (curr.nome === 'name') {
-        acc.name = curr.valor
-      }
-      if (curr.nome === 'phoneNumber') {
-        acc.phoneNumber = curr.valor
-      }
-      return acc
-    }, {} as { name: string; phoneNumber: string })
+    const {
+      client: { name, phone_number: phoneNumber },
+    } = response
 
     await this.#queue.create({
-      name: customer.name,
-      phoneNumber: customer.phoneNumber,
+      name,
+      phoneNumber,
     })
   }
 }
