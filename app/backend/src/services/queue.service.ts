@@ -33,7 +33,7 @@ export class QueueService {
         '87996252178',
         `Olá ${data.name}, você está na fila!\n Sua posição é: ${
           (await this.getToday()).length
-        }\n\nid: ${customer.id}`,
+        }\n${customer.id}`,
       )
     }
 
@@ -52,11 +52,37 @@ export class QueueService {
     const next = (await this.model.getToday()).find((customer) => {
       return customer.status === 'WAITING'
     })
+
     if (next?.id) {
       await this.model.update(next.id, {
         status: 'IN_SERVICE',
       })
     }
+
+    const waitingList = (await this.model.getToday()).filter((customer) => {
+      return customer.status === 'WAITING'
+    })
+
+    const responses = await Promise.all(
+      waitingList.map(async (customer, index) => {
+        if (!customer.phoneNumber) return
+
+        if (index === 0)
+          return whatsappApi.sendMessage(
+            customer.phoneNumber,
+            `${customer.name}, Você é o próximo!`,
+          )
+
+        return whatsappApi.sendMessage(
+          customer.phoneNumber,
+          `${customer.name} falta Apenas ${index + 1} para sua vez!`,
+        )
+      }),
+    )
+    console.log(
+      '🚀 ~ file: queue.service.ts:76 ~ QueueService ~ updateStatus ~ responses:',
+      responses,
+    )
 
     return updateCustomer
   }
