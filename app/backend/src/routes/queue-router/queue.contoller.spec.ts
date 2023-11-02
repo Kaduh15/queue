@@ -7,6 +7,7 @@ import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-m
 import { QueueRepositoryInMemory } from '@/repositories/queue-repository/queue-in-memory.repository'
 
 import { QueueService } from '../../services/queue.service'
+
 import { QueueController } from './queue.controller'
 import { CreateQueueSchema } from './schemas/queue-create.schema'
 

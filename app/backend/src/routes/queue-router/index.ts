@@ -5,9 +5,9 @@ import bodyValidation from '@/middlewares/body-validation.middleware'
 import queryValidationMiddleware from '@/middlewares/query-validation.middleware copy'
 import { QueuePrismaRepository } from '@/repositories/queue-repository/queue-prisma.repository'
 
+import { QueueService } from '../../services/queue.service'
 import { openRepository } from '../open-router'
 
-import { QueueService } from '../../services/queue.service'
 import { QueueController } from './queue.controller'
 import { createQueueSchema } from './schemas/queue-create.schema'
 import { updateStatusQuerySchema } from './schemas/queue-query-update-status'

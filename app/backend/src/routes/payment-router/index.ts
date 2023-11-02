@@ -6,6 +6,7 @@ import { OpenPrismaRepository } from '@/repositories/open-repository/open-prisma
 import { QueuePrismaRepository } from '@/repositories/queue-repository/queue-prisma.repository'
 
 import { PaymentService } from '../../services/payment.service'
+
 import { PaymentController } from './payment.controller'
 import { createPaymentSchema } from './schemas/create-payment.schema'
 

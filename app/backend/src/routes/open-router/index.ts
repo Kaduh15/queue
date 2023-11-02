@@ -4,6 +4,7 @@ import authMiddleware from '@/middlewares/auth.middleware'
 import { OpenPrismaRepository } from '@/repositories/open-repository/open-prisma.repository'
 
 import { OpenService } from '../../services/open.service'
+
 import { OpenController } from './open.controller'
 
 export const openRepository = new OpenPrismaRepository()
