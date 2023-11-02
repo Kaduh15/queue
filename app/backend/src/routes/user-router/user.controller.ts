@@ -1,6 +1,5 @@
+import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-
-import { HandlerFunction } from '@/types/handler-function'
 
 import { UserService } from './user.service'
 
@@ -11,13 +10,13 @@ export class UserController {
     this.service = service
   }
 
-  create: HandlerFunction = async (req, res) => {
+  create = async (req: Request, res: Response) => {
     const { email, name, password, role } = req.body
     const user = await this.service.create({ email, name, password, role })
     return res.status(StatusCodes.CREATED).json(user)
   }
 
-  getAll: HandlerFunction = async (req, res) => {
+  getAll = async (req: Request, res: Response) => {
     const users = await this.service.getAll()
     return res.status(StatusCodes.OK).json(users)
   }
