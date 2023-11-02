@@ -6,8 +6,9 @@ import { Auth } from '@/lib/jsonwebtoken'
 import { UserRepositoryInMemory } from '@/repositories/user-repository/user-in-memory.repository'
 import { NotFoundError, UnauthorizedError } from '@/utils/http-errors'
 
+import { AuthLoginSchema } from '../schemas/auth-login.schema'
+
 import { AuthService } from './auth.service'
-import { AuthLoginSchema } from './schemas/auth-login.schema'
 
 describe('AuthService', () => {
   const userRepository = new UserRepositoryInMemory()

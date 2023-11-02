@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { Status } from '@/entities/queue.entity'
 
-import { QueueService } from './queue.service'
+import { QueueService } from '../services/queue.service'
 
 export class QueueController {
   service: QueueService

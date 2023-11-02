@@ -4,9 +4,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { UserRepositoryInMemory } from '@/repositories/user-repository/user-in-memory.repository'
 
+import { AuthLoginSchema } from '../schemas/auth-login.schema'
+import { AuthService } from '../services/auth.service'
+
 import { AuthController } from './auth.controller'
-import { AuthService } from './auth.service'
-import { AuthLoginSchema } from './schemas/auth-login.schema'
 
 describe('AuthController', () => {
   const userRepository = new UserRepositoryInMemory()

@@ -3,7 +3,7 @@ import { Auth } from '@/lib/jsonwebtoken'
 import { UserRepository } from '@/repositories/user-repository/user.repository'
 import { NotFoundError, UnauthorizedError } from '@/utils/http-errors'
 
-import { AuthLoginSchema } from './schemas/auth-login.schema'
+import { AuthLoginSchema } from '../schemas/auth-login.schema'
 
 export class AuthService {
   private auth = Auth
