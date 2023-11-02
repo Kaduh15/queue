@@ -2,6 +2,7 @@ import { Status } from '@/entities/queue.entity'
 import { OpenRepository } from '@/repositories/open-repository/open.repository'
 import { QueueRepository } from '@/repositories/queue-repository/queue.repository'
 import { BadRequestError, NotFoundError } from '@/utils/http-errors'
+import { whatsappApi } from '@/utils/whatsapp-api'
 
 import { CreateQueueSchema } from '../schemas/queue-create.schema'
 
@@ -26,6 +27,15 @@ export class QueueService {
     if (!isOpen?.isOpen) throw new BadRequestError('It is not open')
 
     const customer = await this.model.create(data)
+
+    if (data.phoneNumber) {
+      whatsappApi.sendMessage(
+        '87996252178',
+        `Olá ${data.name}, você está na fila!\n Sua posição é: ${
+          (await this.getToday()).length
+        }\n\nid: ${customer.id}`,
+      )
+    }
 
     return customer
   }
