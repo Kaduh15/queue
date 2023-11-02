@@ -16,8 +16,6 @@ const paymentController = new PaymentController(paymentService)
 
 const paymentRouter = Router()
 
-paymentRouter.use(paymentController.healthCheck)
-
 paymentRouter.get('/health', (_req, res) => {
   return res.sendStatus(StatusCodes.OK)
 })

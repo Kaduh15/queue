@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 import { PaymentService } from './payment.service'
@@ -22,47 +22,20 @@ export class PaymentController {
     return res.status(200).json(response)
   }
 
-  healthCheck = async (req: Request, res: Response, next: NextFunction) => {
-    if (req.path.includes('webhook')) {
-      return next()
-    }
-    const isHealth = await this.service.healthCheck()
-
-    if (isHealth) {
-      return next()
-    }
-
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Payment service is down',
-    })
-  }
-
   webhook = async (req: Request, res: Response) => {
-    const { hmac } = req.query
+    const { body } = req
 
-    if (typeof hmac !== 'string') {
-      return res.sendStatus(StatusCodes.UNAUTHORIZED)
+    const {
+      data: { id },
+      action,
+    } = body
+
+    if (!id && action !== 'payment.created') {
+      return res.sendStatus(StatusCodes.BAD_REQUEST)
     }
 
-    const [hash, event] = hmac.split('/')
+    await this.service.confirmPayment(id)
 
-    if (hash !== process.env.EFI_HMAC_KEY) {
-      return res.sendStatus(StatusCodes.UNAUTHORIZED)
-    }
-
-    if (event === 'pix') {
-      const { body } = req
-      const txid = body?.pix[0]?.txid
-
-      if (!txid) {
-        return res.sendStatus(StatusCodes.BAD_REQUEST)
-      }
-
-      await this.service.confirmPayment(txid)
-
-      return res.sendStatus(StatusCodes.CREATED)
-    }
-
-    return res.sendStatus(StatusCodes.OK)
+    return res.sendStatus(StatusCodes.CREATED)
   }
 }
