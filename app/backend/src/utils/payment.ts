@@ -92,5 +92,3 @@ export default class PaymentApi {
     return paymentValid
   }
 }
-
-export const paymentApi = new PaymentApi()
