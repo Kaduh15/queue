@@ -28,7 +28,7 @@ O backend do Queue foi desenvolvido com as seguintes tecnologias:
 - **Prisma ORM**: Uma ferramenta de banco de dados com tipos seguros para Node.js e TypeScript.
 - **bcryptjs**: Para criptografia de senhas.
 - **TypeScript**: Linguagem de programação tipada.
-- **EfíPay API**: Utilizada para integração de pagamento com um SDK.
+- **Mercado Pago**: Utilizada para integração de pagamento com um SDK.
 - **Vitest**: Framework de testes para aplicações Node.js e TypeScript.
 
 ### Frontend
