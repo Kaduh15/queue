@@ -63,7 +63,7 @@ export class QueueService {
       return customer.status === 'WAITING'
     })
 
-    const responses = await Promise.all(
+    await Promise.all(
       waitingList.map(async (customer, index) => {
         if (!customer.phoneNumber) return
 
@@ -78,10 +78,6 @@ export class QueueService {
           `${customer.name} falta Apenas ${index + 1} para sua vez!`,
         )
       }),
-    )
-    console.log(
-      '🚀 ~ file: queue.service.ts:76 ~ QueueService ~ updateStatus ~ responses:',
-      responses,
     )
 
     return updateCustomer
