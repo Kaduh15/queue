@@ -2,6 +2,7 @@ import { Status } from '@/entities/queue.entity'
 import { OpenRepository } from '@/repositories/open-repository/open.repository'
 import { QueueRepository } from '@/repositories/queue-repository/queue.repository'
 import { BadRequestError, NotFoundError } from '@/utils/http-errors'
+import { whatsappApi } from '@/utils/whatsapp-api'
 
 import { CreateQueueSchema } from '../schemas/queue-create.schema'
 
@@ -27,6 +28,15 @@ export class QueueService {
 
     const customer = await this.model.create(data)
 
+    if (data.phoneNumber) {
+      whatsappApi.sendMessage(
+        '87996252178',
+        `Olá ${data.name}, você está na fila!\n Sua posição é: ${
+          (await this.getToday()).length
+        }\n${customer.id}`,
+      )
+    }
+
     return customer
   }
 
@@ -42,11 +52,33 @@ export class QueueService {
     const next = (await this.model.getToday()).find((customer) => {
       return customer.status === 'WAITING'
     })
+
     if (next?.id) {
       await this.model.update(next.id, {
         status: 'IN_SERVICE',
       })
     }
+
+    const waitingList = (await this.model.getToday()).filter((customer) => {
+      return customer.status === 'WAITING'
+    })
+
+    await Promise.all(
+      waitingList.map(async (customer, index) => {
+        if (!customer.phoneNumber) return
+
+        if (index === 0)
+          return whatsappApi.sendMessage(
+            customer.phoneNumber,
+            `${customer.name}, Você é o próximo!`,
+          )
+
+        return whatsappApi.sendMessage(
+          customer.phoneNumber,
+          `${customer.name} falta Apenas ${index + 1} para sua vez!`,
+        )
+      }),
+    )
 
     return updateCustomer
   }

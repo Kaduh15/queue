@@ -40,6 +40,7 @@ services:
       test: ["CMD", "lsof", "-t", "-i:3001"] # Caso utilize outra porta interna para o back, altere ela aqui também
       timeout: 10s
       retries: 5
+    restart: always
     networks:
       - app-network
 

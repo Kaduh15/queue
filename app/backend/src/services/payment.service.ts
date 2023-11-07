@@ -10,22 +10,26 @@ export class PaymentService {
   #open: OpenRepository
   #paymentApi: PaymentApi
 
-  constructor(queue: QueueRepository, open: OpenRepository) {
+  constructor(
+    queue: QueueRepository,
+    open: OpenRepository,
+    paymentApi: PaymentApi,
+  ) {
     this.#queue = queue
     this.#open = open
-    this.#paymentApi = new PaymentApi()
+    this.#paymentApi = paymentApi
   }
 
-  async create({ name, phoneNumber, valor }: CreatePaymentSchema) {
-    const hasCustomer = (await this.#queue.getToday()).some((customer) => {
-      return customer.name === name
-    })
-
+  async create({ name, phoneNumber, valor = '0.01' }: CreatePaymentSchema) {
     const isOpen = await this.#open.getById(1)
 
     if (!isOpen?.isOpen) {
       throw new BadRequestError("it's closed")
     }
+
+    const hasCustomer = (await this.#queue.getToday()).some((customer) => {
+      return customer.name === name
+    })
 
     if (hasCustomer) {
       throw new BadRequestError('Customer already paid')
@@ -43,15 +47,14 @@ export class PaymentService {
   }
 
   async confirmPayment(paymentId: string) {
-    const response = await this.#paymentApi.consultPix(paymentId)
+    const {
+      status,
+      client: { name, phone_number: phoneNumber },
+    } = await this.#paymentApi.consultPix(paymentId)
 
-    if (response?.status !== 'approved') {
+    if (status !== 'approved') {
       throw new BadRequestError('Pix payment not completed')
     }
-
-    const {
-      client: { name, phone_number: phoneNumber },
-    } = response
 
     await this.#queue.create({
       name,
