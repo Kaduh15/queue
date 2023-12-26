@@ -1,18 +1,21 @@
 import { ThemeProvider } from '@/components/theme-provider'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
-import { Bai_Jamjuree as BaiJamjuree, Sofia_Sans as Sofia } from "next/font/google"
+import {
+  Bai_Jamjuree as BaiJamjuree,
+  Sofia_Sans as Sofia,
+} from 'next/font/google'
 import './globals.css'
 
 export const sofia = Sofia({
-  subsets: ["latin"],
-  variable: "--sofia-sans",
+  subsets: ['latin'],
+  variable: '--sofia-sans',
 })
 
 export const baiJamjuree = BaiJamjuree({
   subsets: ['latin'],
-  variable: "--bai-jamjuree",
-  weight: "700"
+  variable: '--bai-jamjuree',
+  weight: '700',
 })
 
 export const metadata: Metadata = {
@@ -27,7 +30,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={`${sofia.variable} ${baiJamjuree.variable} ${cn('min-h-screen bg-background font-sofia antialiased')}`}>
+      <body
+        className={`${sofia.variable} ${baiJamjuree.variable} ${cn(
+          'min-h-screen w-full bg-background font-sofia antialiased',
+        )}`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -35,7 +42,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-        </ThemeProvider></body>
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
