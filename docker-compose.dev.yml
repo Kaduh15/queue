@@ -11,10 +11,7 @@ services:
       - backend
       - whatsapp-api
     environment:
-      - VITE_API_URL=http://localhost:3001
-      - VITE_API_WHATSAPP=http://localhost:3002
-      - VITE_PORT=3000
-      - VITE_HOST=true
+      - API_URL=http://backend:3001
     # Os `healthcheck` devem garantir que a aplicação
     # está operacional, antes de liberar o container
     healthcheck:
