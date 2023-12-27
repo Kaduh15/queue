@@ -24,11 +24,11 @@ services:
   backend:
     container_name: app_backend
     build: ./app/backend
+    volumes: 
+      - ./app/backend/src:/app-backend/src
     ports:
       - 3001:3001
     command: sh -c "npm run db:generate && npm run db:migrate && npm run dev"
-    volumes: 
-      - ./app/backend/src:/app-backend/src
     depends_on:
       - db
     env_file:

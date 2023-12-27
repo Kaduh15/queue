@@ -2,8 +2,6 @@ FROM node:18
 
 WORKDIR /app-whatsapp-api
 
-RUN npm install npm@latest -g
-
 COPY package.json .
 
 RUN npm install
