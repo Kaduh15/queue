@@ -23,7 +23,6 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginFormSchema),
   })
@@ -31,17 +30,25 @@ export default function LoginForm() {
   const onSubmit = handleSubmit((data) => handleSingIn(JSON.stringify(data)))
 
   return (
-    <form onSubmit={onSubmit} className='flex flex-col gap-4'>
+    <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <Label className="flex flex-col gap-4 text-xl" htmlFor="email">
         Email
         <Input {...register('email')} id="email" type="email" />
       </Label>
       <Label className="flex flex-col gap-4 text-xl" htmlFor="password">
         Senha
-        <Input {...register('password')} id="password" type={showPassword ? 'text' :"password"} />
+        <Input
+          {...register('password')}
+          id="password"
+          type={showPassword ? 'text' : 'password'}
+        />
       </Label>
       <Label className="flex gap-4" htmlFor="showPassword">
-        <Checkbox value={showPassword ? '1' : '0'} onClick={() => setShowPassword((prev) => !prev)} id='showPassword' />
+        <Checkbox
+          value={showPassword ? '1' : '0'}
+          onClick={() => setShowPassword((prev) => !prev)}
+          id="showPassword"
+        />
         Mostrar senha
       </Label>
       <Button type="submit">Entrar</Button>

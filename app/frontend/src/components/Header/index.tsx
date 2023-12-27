@@ -4,7 +4,6 @@ import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import DialogLogin from '../DialogLogin'
 import { cookies } from 'next/headers'
 import { Button } from '../ui/button'
-import { redirect } from 'next/navigation'
 import { handleLogout } from '@/actions/handlerLogout'
 
 export default function Header() {
@@ -20,8 +19,9 @@ export default function Header() {
         <SheetTrigger>
           <Menu />
         </SheetTrigger>
-        <SheetContent className="flex flex-col h-full items-center justify-between p-12">
+        <SheetContent className="flex h-full flex-col items-center justify-between p-12">
           {!token && <DialogLogin />}
+          {token && <Button onClick={handleLogout}>Sair</Button>}
           <ModeToggle />
         </SheetContent>
       </Sheet>
