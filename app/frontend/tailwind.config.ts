@@ -8,7 +8,7 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   theme: {
     container: {
       center: true,
@@ -20,6 +20,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        sofia: ["var(--sofia-sans)", ...fontFamily.sans],
+        alt: ["var(--bai-jamjuree)"]
       },
       colors: {
         border: "hsl(var(--border))",

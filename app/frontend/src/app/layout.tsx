@@ -1,12 +1,21 @@
 import { ThemeProvider } from '@/components/theme-provider'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
-import { Inter as FontSans } from "next/font/google"
+import {
+  Bai_Jamjuree as BaiJamjuree,
+  Sofia_Sans as Sofia,
+} from 'next/font/google'
 import './globals.css'
 
-export const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
+const sofia = Sofia({
+  subsets: ['latin'],
+  variable: '--sofia-sans',
+})
+
+const baiJamjuree = BaiJamjuree({
+  subsets: ['latin'],
+  variable: '--bai-jamjuree',
+  weight: '700',
 })
 
 export const metadata: Metadata = {
@@ -21,16 +30,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={cn('min-h-screen bg-background font-sans antialiased',
-        fontSans.variable)
-      }><ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-    </ThemeProvider></body>
+      <body
+        className={`${sofia.variable} ${baiJamjuree.variable} ${cn(
+          'min-h-screen w-full bg-background font-sofia antialiased',
+        )}`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
