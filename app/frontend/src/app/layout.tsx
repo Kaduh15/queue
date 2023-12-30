@@ -7,12 +7,12 @@ import {
 } from 'next/font/google'
 import './globals.css'
 
-export const sofia = Sofia({
+const sofia = Sofia({
   subsets: ['latin'],
   variable: '--sofia-sans',
 })
 
-export const baiJamjuree = BaiJamjuree({
+const baiJamjuree = BaiJamjuree({
   subsets: ['latin'],
   variable: '--bai-jamjuree',
   weight: '700',
