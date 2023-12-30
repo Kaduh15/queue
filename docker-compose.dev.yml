@@ -46,6 +46,7 @@ services:
     build: ./app/whatsapp-api
     ports:
       - 3002:3002
+    command: sh -c "npm run build && npm run dev"
     volumes: 
       - ./app/whatsapp-api/src:/app-whatsapp-api/src
     environment:
