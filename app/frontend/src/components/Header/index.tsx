@@ -14,7 +14,7 @@ export default function Header() {
         <ListMinus size={42} />
         <h1 className="text-4xl font-bold">Queue</h1>
       </div>
-      <Sheet >
+      <Sheet>
         <SheetTrigger>
           <Menu />
         </SheetTrigger>
