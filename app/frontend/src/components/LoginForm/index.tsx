@@ -20,10 +20,7 @@ export type LoginForm = z.infer<typeof loginFormSchema>
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
-  const {
-    register,
-    handleSubmit,
-  } = useForm<LoginForm>({
+  const { register, handleSubmit } = useForm<LoginForm>({
     resolver: zodResolver(loginFormSchema),
   })
 
@@ -33,13 +30,12 @@ export default function LoginForm() {
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <Label className="flex flex-col gap-4 text-xl" htmlFor="email">
         Email
-        <Input {...register('email')} id="email" type="email" />
+        <Input {...register('email')} type="email" />
       </Label>
       <Label className="flex flex-col gap-4 text-xl" htmlFor="password">
         Senha
         <Input
           {...register('password')}
-          id="password"
           type={showPassword ? 'text' : 'password'}
         />
       </Label>
@@ -47,7 +43,6 @@ export default function LoginForm() {
         <Checkbox
           value={showPassword ? '1' : '0'}
           onClick={() => setShowPassword((prev) => !prev)}
-          id="showPassword"
         />
         Mostrar senha
       </Label>
