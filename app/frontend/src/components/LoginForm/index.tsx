@@ -43,6 +43,7 @@ export default function LoginForm() {
         <Checkbox
           value={showPassword ? '1' : '0'}
           onClick={() => setShowPassword((prev) => !prev)}
+          id="showPassword"
         />
         Mostrar senha
       </Label>
