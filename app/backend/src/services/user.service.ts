@@ -1,6 +1,6 @@
 import { Encrypt } from '@/lib/bcryptjs'
 import { UserRepository } from '@/repositories/user-repository/user.repository'
-import { CreateUserSchema } from '@/routes/user-router/schemas/user-create.schema'
+import { CreateUserSchema } from '@/schemas/user-create.schema'
 import { ConflictError } from '@/utils/http-errors'
 
 export class UserService {
