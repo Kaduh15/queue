@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
-import { handleSingIn } from '@/actions/handlerSingIn'
+import { handleSingIn } from '@/actions/handleSingIn'
 import { Checkbox } from '../ui/checkbox'
 import { useState } from 'react'
 
