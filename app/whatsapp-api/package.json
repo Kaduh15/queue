@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsx watch src/server.ts",
-    "prestart": "npm run build",
     "start": "node .",
     "lint:fix": "eslint . --ext ts,tsx --fix --report-unused-disable-directives --max-warnings 0",
     "test": "echo \"Error: no test specified\" && exit 1"
