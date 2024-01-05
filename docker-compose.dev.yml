@@ -12,6 +12,7 @@ services:
       - whatsapp-api
     environment:
       - API_URL=http://backend:3001
+      - WHATSAPP_API_URL=http://whatsapp-api:3002
     # Os `healthcheck` devem garantir que a aplicação
     # está operacional, antes de liberar o container
     healthcheck:
@@ -46,7 +47,7 @@ services:
     build: ./app/whatsapp-api
     ports:
       - 3002:3002
-    command: sh -c "npm run build && npm run dev"
+    command: sh -c "npm run dev"
     volumes: 
       - ./app/whatsapp-api/src:/app-whatsapp-api/src
     environment:
