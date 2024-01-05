@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from "react"
-import { Skeleton } from "../ui/skeleton"
+import { useEffect, useState } from 'react'
+import { Skeleton } from '../ui/skeleton'
 import QRCode from 'qrcode'
-import Image from "next/image"
-import { handleQrCodeConnected } from "./actions/handleQrCodeConnected"
+import Image from 'next/image'
+import { handleQrCodeConnected } from './actions/handleQrCodeConnected'
 
 export default function QrCodeWhatsapp() {
   const [data, setData] = useState<{
@@ -15,10 +15,12 @@ export default function QrCodeWhatsapp() {
     connected: false,
   })
 
-  const NODE_ENV = process.env.NODE_ENV;
-  const WHATSAPP_API_URL = process.env.WHATSAPP_API_URL;
-  const isDevelopment = NODE_ENV === 'development';
-  const whatsappApiUrl = isDevelopment ? WHATSAPP_API_URL?.replace('whatsapp-api', 'localhost') : WHATSAPP_API_URL;
+  const NODE_ENV = process.env.NODE_ENV
+  const WHATSAPP_API_URL = process.env.WHATSAPP_API_URL
+  const isDevelopment = NODE_ENV === 'development'
+  const whatsappApiUrl = isDevelopment
+    ? WHATSAPP_API_URL?.replace('whatsapp-api', 'localhost')
+    : WHATSAPP_API_URL
 
   useEffect(() => {
     const eventSource = new EventSource(`${whatsappApiUrl}/event/login`)
@@ -38,12 +40,19 @@ export default function QrCodeWhatsapp() {
     eventSource.addEventListener('login', updateData)
 
     return () => eventSource.close()
-  }, [])
+  }, [whatsappApiUrl])
 
   return (
-    <div className="flex justify-center items-center my-10">
-      {data.qrCode && <Image src={data.qrCode} alt="QrCode para conectar no whatsapp" width={250} height={250} />}
-      {!data.qrCode && <Skeleton className="p-2 bg-white h-52 aspect-square" />}
+    <div className="my-10 flex items-center justify-center">
+      {data.qrCode && (
+        <Image
+          src={data.qrCode}
+          alt="QrCode para conectar no whatsapp"
+          width={250}
+          height={250}
+        />
+      )}
+      {!data.qrCode && <Skeleton className="aspect-square h-52 bg-white p-2" />}
     </div>
   )
 }
