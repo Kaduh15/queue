@@ -11,8 +11,8 @@ import { Checkbox } from '../ui/checkbox'
 import { useState } from 'react'
 
 const loginFormSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
+  email: z.string().email('Email inválido'),
+  password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
 })
 
 export type LoginForm = z.infer<typeof loginFormSchema>
@@ -20,7 +20,7 @@ export type LoginForm = z.infer<typeof loginFormSchema>
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
-  const { register, handleSubmit } = useForm<LoginForm>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginFormSchema),
   })
 
@@ -31,6 +31,7 @@ export default function LoginForm() {
       <Label className="flex flex-col gap-4 text-xl" htmlFor="email">
         Email
         <Input {...register('email')} type="email" />
+        {errors.email && (<span className='text-red-500'>{errors.email.message}</span>)}
       </Label>
       <Label className="flex flex-col gap-4 text-xl" htmlFor="password">
         Senha
@@ -38,6 +39,7 @@ export default function LoginForm() {
           {...register('password')}
           type={showPassword ? 'text' : 'password'}
         />
+        {errors.password && (<span className='text-red-500'>{errors.password.message}</span>)}
       </Label>
       <Label className="flex gap-4" htmlFor="showPassword">
         <Checkbox

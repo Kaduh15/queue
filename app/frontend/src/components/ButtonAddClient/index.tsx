@@ -19,10 +19,12 @@ import Image from 'next/image'
 export function formAddClient(hasToken: boolean) {
   return z.object({
     name: z.string().min(3),
-    phoneNumber: hasToken ? z.string().optional().refine((data) => {
+    phoneNumber: hasToken ? z.string({
+      description: 'Whatsapp deve ter 11 números',
+    }).optional().refine((data) => {
       if (!data) return true
       return data.length === 11
-    }) : z.string().min(11).max(11),
+    }) : z.string().min(11, 'Whatsapp deva ter no mínimo 11 números').max(11, 'Whatsapp deva ter no máximo 11 números'),
   })
 }
 
