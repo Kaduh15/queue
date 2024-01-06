@@ -2,10 +2,10 @@ import { Router } from 'express'
 
 import bodyValidation from '@/middlewares/body-validation.middleware'
 import { UserPrismaRepository } from '@/repositories/user-repository/user-prisma.repository'
+import { createUserSchema } from '@/schemas/user-create.schema'
 
-import { createUserSchema } from './schemas/user-create.schema'
-import { UserController } from './user.controller'
-import { UserService } from './user.service'
+import { UserController } from '../../controllers/user.controller'
+import { UserService } from '../../services/user.service'
 
 export const userRepository = new UserPrismaRepository()
 
