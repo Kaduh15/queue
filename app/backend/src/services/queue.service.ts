@@ -30,10 +30,10 @@ export class QueueService {
 
     if (data.phoneNumber) {
       whatsappApi.sendMessage(
-        '87996252178',
-        `Olá ${data.name}, você está na fila!\n Sua posição é: ${
+        data.phoneNumber,
+        `Olá ${data.name}, você está na fila!\nSua posição é: ${
           (await this.getToday()).length
-        }\n${customer.id}`,
+        }`,
       )
     }
 
