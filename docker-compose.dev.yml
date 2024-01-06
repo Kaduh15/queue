@@ -12,7 +12,7 @@ services:
       - whatsapp-api
     environment:
       - API_URL=http://backend:3001
-      - WHATSAPP_API_URL=http://whatsapp-api:3002
+      - NEXT_PUBLIC_WHATSAPP_API=http://whatsapp-api:3002
     # Os `healthcheck` devem garantir que a aplicação
     # está operacional, antes de liberar o container
     healthcheck:

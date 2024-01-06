@@ -16,7 +16,7 @@ export default function QrCodeWhatsapp() {
   })
 
   const NODE_ENV = process.env.NODE_ENV
-  const WHATSAPP_API_URL = process.env.WHATSAPP_API_URL
+  const WHATSAPP_API_URL = process.env.NEXT_PUBLIC_WHATSAPP_API
   const isDevelopment = NODE_ENV === 'development'
   const whatsappApiUrl = isDevelopment
     ? WHATSAPP_API_URL?.replace('whatsapp-api', 'localhost')

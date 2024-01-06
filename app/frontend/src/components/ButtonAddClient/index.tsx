@@ -19,7 +19,10 @@ import Image from 'next/image'
 export function formAddClient(hasToken: boolean) {
   return z.object({
     name: z.string().min(3),
-    phoneNumber: hasToken ? z.string().optional() : z.string().min(11).max(11),
+    phoneNumber: hasToken ? z.string().optional().refine((data) => {
+      if (!data) return true
+      return data.length === 11
+    }) : z.string().min(11).max(11),
   })
 }
 

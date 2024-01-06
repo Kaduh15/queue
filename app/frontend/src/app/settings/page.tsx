@@ -1,7 +1,7 @@
 import QrCodeWhatsapp from '@/components/QrCodeWhatsapp'
 
 export default async function SettingsPage() {
-  const data = await fetch(process.env.WHATSAPP_API_URL + '/is-connected', {
+  const data = await fetch(process.env.NEXT_PUBLIC_WHATSAPP_API + '/is-connected', {
     cache: 'no-cache',
   }).then((response) => response.json())
 
