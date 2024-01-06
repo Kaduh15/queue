@@ -8,6 +8,11 @@ export const whatsappApi = {
   }),
 
   async sendMessage(phoneNumber: string, message: string) {
+    const { data } = await this.request.get(`/is-connected`)
+    if (!data?.connected !== true) {
+      return
+    }
+
     const response = await this.request.get(`/send`, {
       params: {
         phone: phoneNumber,
