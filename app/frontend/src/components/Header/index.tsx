@@ -1,4 +1,4 @@
-import { Home, ListMinus, Menu } from 'lucide-react'
+import { ListMinus, Menu } from 'lucide-react'
 import { ModeToggle } from '../ModeToggle'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import DialogLogin from '../DialogLogin'
@@ -12,7 +12,7 @@ export default function Header() {
   return (
     <header className="flex w-full items-center justify-between border-b px-12 py-6">
       <div className="flex gap-4">
-        <Link href='/' className='flex gap-3'>
+        <Link href="/" className="flex gap-3">
           <ListMinus size={42} />
           <h1 className="text-4xl font-bold">Queue</h1>
         </Link>
@@ -22,9 +22,9 @@ export default function Header() {
           <Menu />
         </SheetTrigger>
         <SheetContent className="flex h-full flex-col items-center justify-between p-12">
-          <h2 className='text-3xl text-bold'>Menu</h2>
+          <h2 className="text-bold text-3xl">Menu</h2>
           {!token && <DialogLogin />}
-          {token && <Link href='/settings'>Configurações</Link>}
+          {token && <Link href="/settings">Configurações</Link>}
           {token && <ButtonLogout />}
           <ModeToggle />
         </SheetContent>
