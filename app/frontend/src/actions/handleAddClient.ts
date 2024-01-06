@@ -5,6 +5,8 @@ import { cookies } from 'next/headers'
 
 export async function handleAddClient(data: string) {
   const token = cookies().get('token')?.value
+  const newData = JSON.parse(data)
+  newData.valor = process.env.NODE_ENV === 'development' ? '0.01' : newData.valor
 
   if (!token) {
     const result = await fetch(process.env.API_URL + '/payment', {
@@ -12,7 +14,7 @@ export async function handleAddClient(data: string) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: data,
+      body: JSON.stringify(newData),
     })
 
     const dataResult = await result.json()
