@@ -5,6 +5,8 @@ import PaymentApi from '@/utils/payment'
 
 import { CreatePaymentSchema } from '../schemas/create-payment.schema'
 
+const isDev = process.env.NODE_ENV !== 'production'
+
 export class PaymentService {
   #queue: QueueRepository
   #open: OpenRepository
@@ -20,7 +22,7 @@ export class PaymentService {
     this.#paymentApi = paymentApi
   }
 
-  async create({ name, phoneNumber, valor = '0.01' }: CreatePaymentSchema) {
+  async create({ name, phoneNumber, valor }: CreatePaymentSchema) {
     const isOpen = await this.#open.getById(1)
 
     if (!isOpen?.isOpen) {
@@ -52,7 +54,7 @@ export class PaymentService {
       client: { name, phone_number: phoneNumber },
     } = await this.#paymentApi.consultPix(paymentId)
 
-    if (status !== 'approved') {
+    if (status !== 'approved' && !isDev) {
       throw new BadRequestError('Pix payment not completed')
     }
 
