@@ -1,9 +1,0 @@
-### SingIn
-
-POST "localhost:3001/login" HTTP/1.1
-content-type: application/json
-
-{
-    "email": "admin@admin.com",
-    "password": "@admin"
-}
