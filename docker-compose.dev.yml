@@ -2,7 +2,9 @@ version: '3.9'
 services:
   frontend:
     container_name: app_frontend
-    build: ./app/frontend
+    build: 
+      context: ./app/frontend
+      dockerfile: Dockerfile.dev
     ports:
       - 3000:3000
     volumes: 
@@ -24,7 +26,9 @@ services:
 
   backend:
     container_name: app_backend
-    build: ./app/backend
+    build: 
+      context: ./app/backend
+      dockerfile: Dockerfile.dev
     volumes: 
       - ./app/backend/src:/app-backend/src
     ports:
@@ -44,7 +48,9 @@ services:
 
   whatsapp-api:
     container_name: app_whatsapp-api
-    build: ./app/whatsapp-api
+    build: 
+      context: ./app/whatsapp-api
+      dockerfile: Dockerfile.dev
     ports:
       - 3002:3002
     command: sh -c "npm run dev"
@@ -61,7 +67,9 @@ services:
 
   db-studio:
     container_name: app_db-studio
-    build: ./app/backend
+    build: 
+      context: ./app/ba'
+      dockerfile: Dockerfile.dev
     ports:
       - 5555:5555
     working_dir: /app-backend
