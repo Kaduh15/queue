@@ -68,7 +68,7 @@ services:
   db-studio:
     container_name: app_db-studio
     build: 
-      context: ./app/ba'
+      context: ./app/backend
       dockerfile: Dockerfile.dev
     ports:
       - 5555:5555
