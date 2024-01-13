@@ -6,7 +6,7 @@ import { cookies } from 'next/headers'
 export async function handleAddClient(data: string) {
   const token = cookies().get('token')?.value
 
-  if (!token) {    
+  if (!token) {
     const result = await fetch(process.env.API_URL + '/payment', {
       method: 'POST',
       headers: {
