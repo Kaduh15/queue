@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   frontend:
-    container_name: app_frontend
+    container_name: frontend
     build: 
       context: ./app/frontend
       dockerfile: Dockerfile.dev
@@ -25,7 +25,7 @@ services:
       - app-network
 
   backend:
-    container_name: app_backend
+    container_name: backend
     build: 
       context: ./app/backend
       dockerfile: Dockerfile.dev
@@ -47,7 +47,7 @@ services:
       - app-network
 
   whatsapp-api:
-    container_name: app_whatsapp-api
+    container_name: whatsapp-api
     build: 
       context: ./app/whatsapp-api
       dockerfile: Dockerfile.dev
@@ -66,7 +66,7 @@ services:
       - app-network
 
   db-studio:
-    container_name: app_db-studio
+    container_name: db-studio
     build: 
       context: ./app/backend
       dockerfile: Dockerfile.dev
