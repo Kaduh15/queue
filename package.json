@@ -20,6 +20,7 @@
     "start:front": "cd ./app/frontend && npm start",
     "start:whats:dev": "cd ./app/whatsapp-api && npm run dev",
     "start:whats": "cd ./app/whatsapp-api && npm start",
+    "lint": "cd ./app/backend && npm run lint && cd ../frontend && npm run lint && cd ../whatsapp-api && npm run lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

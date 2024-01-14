@@ -10,7 +10,7 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-start gap-4">
       <Header />
-      {token && <NextClientButton >Proximo</NextClientButton>}
+      {token && <NextClientButton>Proximo</NextClientButton>}
       <CardQueue />
     </main>
   )
