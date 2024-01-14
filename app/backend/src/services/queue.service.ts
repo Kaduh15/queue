@@ -82,4 +82,55 @@ export class QueueService {
 
     return updateCustomer
   }
+
+  async next(status: Status) {
+    const customers = await this.model.getToday()
+
+    const currtentCustomer = customers.find((customer) => {
+      return customer.status === 'IN_SERVICE'
+    })
+
+    const nextCustomer = customers.find((customer) => {
+      return customer.status === 'WAITING'
+    })
+
+    if (currtentCustomer) {
+      this.model.update(currtentCustomer.id, {
+        status,
+      })
+      currtentCustomer.status = status
+    }
+
+    if (nextCustomer) {
+      this.model.update(nextCustomer.id, {
+        status: 'IN_SERVICE',
+      })
+      nextCustomer.status = 'IN_SERVICE'
+    }
+
+    const queue = customers.filter((customer) => {
+      return customer.status === 'WAITING'
+    })
+
+    await Promise.all(
+      queue.map(async (customer, index) => {
+        if (!customer.phoneNumber) return
+
+        if (index === 0)
+          return whatsappApi.sendMessage(
+            customer.phoneNumber,
+            `${customer.name}, Você é o próximo!`,
+          )
+
+        return whatsappApi.sendMessage(
+          customer.phoneNumber,
+          `${customer.name} falta Apenas ${index} para sua vez!${
+            index <= 3 && `\nPara não perder sua vez, venha para a Barbearia!`
+          }`,
+        )
+      }),
+    )
+
+    return nextCustomer
+  }
 }

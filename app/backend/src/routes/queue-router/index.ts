@@ -4,6 +4,7 @@ import authMiddleware from '@/middlewares/auth.middleware'
 import bodyValidation from '@/middlewares/body-validation.middleware'
 import queryValidationMiddleware from '@/middlewares/query-validation.middleware copy'
 import { QueuePrismaRepository } from '@/repositories/queue-repository/queue-prisma.repository'
+import { queueNextClientQuerySchema } from '@/schemas/queue-next-client'
 
 import { QueueController } from '../../controllers/queue.controller'
 import { createQueueSchema } from '../../schemas/queue-create.schema'
@@ -27,10 +28,18 @@ queueRouter.post(
 )
 queueRouter.post(
   '/:id',
-  authMiddleware('ADMIN'),
   queryValidationMiddleware(updateStatusQuerySchema),
+  authMiddleware('ADMIN'),
   queueController.updateStatus,
 )
+
+queueRouter.put(
+  '/next',
+  queryValidationMiddleware(queueNextClientQuerySchema),
+  authMiddleware('ADMIN'),
+  queueController.next,
+)
+
 queueRouter.get('/today', queueController.getToday)
 
 export { queueRouter }

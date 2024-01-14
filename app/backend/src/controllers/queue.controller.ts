@@ -36,4 +36,12 @@ export class QueueController {
 
     res.status(StatusCodes.OK).json(customerUpdate)
   }
+
+  next = async (req: Request, res: Response) => {
+    const { status } = req.query
+
+    const nextCustomer = await this.service.next(status as Status)
+
+    res.status(StatusCodes.OK).json(nextCustomer)
+  }
 }
