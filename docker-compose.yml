@@ -5,17 +5,14 @@ services:
     build: ./app/frontend
     ports:
       - 3000:3000
-    command: sh -c "npm run preview"
+    command: sh -c "npm run start"
     volumes: 
       - ./app/frontend/src:/app-frontend/src
     depends_on:
       - backend
       - whatsapp-api
     environment:
-      - VITE_API_URL=http://localhost:3001
-      - VITE_API_WHATSAPP=http://locahost:3002
-      - VITE_PORT=3000
-      - VITE_HOST=true
+      - API_URL=http://localhost:3001
     # Os `healthcheck` devem garantir que a aplicação
     # está operacional, antes de liberar o container
     healthcheck:

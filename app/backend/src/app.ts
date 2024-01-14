@@ -27,6 +27,11 @@ class App {
   private config(): void {
     this.app.use(cors())
     this.app.use(express.json())
+    // logger middleware request
+    this.app.use((req, _res, next) => {
+      console.log(req.method, req.url)
+      next()
+    })
   }
 
   private routes(): void {

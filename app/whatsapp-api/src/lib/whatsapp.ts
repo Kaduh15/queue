@@ -100,7 +100,7 @@ export default class WhatsappInstance {
 
     const exist = await this.sock?.onWhatsApp(phone + '@s.whatsapp.net')
 
-    if (!exist || !exist[0].exists) {
+    if (!exist || !exist[0]?.exists) {
       throw new Error('Phone not found or invalid')
     }
 
