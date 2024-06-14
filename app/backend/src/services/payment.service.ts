@@ -5,8 +5,6 @@ import PaymentApi from '@/utils/payment'
 
 import { CreatePaymentSchema } from '../schemas/create-payment.schema'
 
-const isDev = process.env.NODE_ENV !== 'production'
-
 export class PaymentService {
   #queue: QueueRepository
   #open: OpenRepository
@@ -52,9 +50,10 @@ export class PaymentService {
     const {
       status,
       client: { name, phone_number: phoneNumber },
+      url_payment: paymentUrl,
     } = await this.#paymentApi.consultPix(paymentId)
 
-    if (status !== 'approved' && !isDev) {
+    if (status !== 'approved' && !paymentUrl.includes('sandbox')) {
       throw new BadRequestError('Pix payment not completed')
     }
 
