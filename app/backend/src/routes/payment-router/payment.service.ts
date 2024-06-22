@@ -3,7 +3,7 @@ import { QueueRepository } from '@/repositories/queue-repository/queue.repositor
 import { BadRequestError } from '@/utils/http-errors'
 import PaymentApi from '@/utils/payment'
 
-import { CreatePaymentSchema } from '../schemas/create-payment.schema'
+import { CreatePaymentSchema } from '../../schemas/create-payment.schema'
 
 export class PaymentService {
   #queue: QueueRepository

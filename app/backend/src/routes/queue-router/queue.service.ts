@@ -4,7 +4,7 @@ import { QueueRepository } from '@/repositories/queue-repository/queue.repositor
 import { BadRequestError, NotFoundError } from '@/utils/http-errors'
 import { whatsappApi } from '@/utils/whatsapp-api'
 
-import { CreateQueueSchema } from '../schemas/queue-create.schema'
+import { CreateQueueSchema } from '../../schemas/queue-create.schema'
 
 export class QueueService {
   model: QueueRepository

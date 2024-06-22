@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
-import { PaymentService } from '../services/payment.service'
+import { PaymentService } from './payment.service'
 
 export class PaymentController {
   private service: PaymentService

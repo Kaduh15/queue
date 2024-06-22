@@ -5,9 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
 
-import { OpenService } from '../services/open.service'
-
 import { OpenController } from './open.controller'
+import { OpenService } from './open.service'
 
 describe('OpenController', () => {
   const openRepository = new OpenRepositoryInMemory()

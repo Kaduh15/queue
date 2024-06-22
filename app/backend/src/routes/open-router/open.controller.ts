@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
-import { OpenService } from '../services/open.service'
+import { OpenService } from './open.service'
 
 export class OpenController {
   private service: OpenService
