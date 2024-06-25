@@ -86,7 +86,7 @@ export class QueueService {
   async next(status: Status) {
     const customers = await this.model.getToday()
 
-    const currtentCustomer = customers.find((customer) => {
+    const currentCustomer = customers.find((customer) => {
       return customer.status === 'IN_SERVICE'
     })
 
@@ -94,11 +94,11 @@ export class QueueService {
       return customer.status === 'WAITING'
     })
 
-    if (currtentCustomer) {
-      this.model.update(currtentCustomer.id, {
+    if (currentCustomer) {
+      this.model.update(currentCustomer.id, {
         status,
       })
-      currtentCustomer.status = status
+      currentCustomer.status = status
     }
 
     if (nextCustomer) {
