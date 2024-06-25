@@ -131,7 +131,9 @@ export class QueueService {
         return this.whatsappApi.sendMessage(
           customer.phoneNumber,
           `${customer.name} falta Apenas ${index} para sua vez!${
-            index <= 3 && `\nPara não perder sua vez, venha para a Barbearia!`
+            index <= 3
+              ? `\nPara não perder sua vez, venha para a Barbearia!`
+              : ''
           }`,
         )
       }),

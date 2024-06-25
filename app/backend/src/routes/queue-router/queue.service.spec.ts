@@ -187,7 +187,7 @@ describe('QueueService', () => {
     it('should send message to customers', async () => {
       await seedQueueRepository({
         repository: queueRepository,
-        quantity: 5,
+        quantity: 10,
       })
 
       const sendMessageSpy = Sinon.spy(whatsappApiMock, 'sendMessage')
@@ -195,7 +195,7 @@ describe('QueueService', () => {
 
       await queueService.next('DONE')
 
-      expect(sendMessageSpy.callCount).to.equal(3)
+      expect(sendMessageSpy.callCount).to.equal(8)
       const fistSendMessage = sendMessageSpy.getCall(0).args
       expect(fistSendMessage).to.deep.equal([
         '99999999999',
@@ -206,6 +206,24 @@ describe('QueueService', () => {
       expect(secondSendMessage).to.deep.equal([
         '99999999999',
         'Any Name 4 falta Apenas 1 para sua vez!\nPara não perder sua vez, venha para a Barbearia!',
+      ])
+
+      const thirdSendMessage = sendMessageSpy.getCall(2).args
+      expect(thirdSendMessage).to.deep.equal([
+        '99999999999',
+        'Any Name 5 falta Apenas 2 para sua vez!\nPara não perder sua vez, venha para a Barbearia!',
+      ])
+
+      const fourthSendMessage = sendMessageSpy.getCall(3).args
+      expect(fourthSendMessage).to.deep.equal([
+        '99999999999',
+        'Any Name 6 falta Apenas 3 para sua vez!\nPara não perder sua vez, venha para a Barbearia!',
+      ])
+
+      const fifthSendMessage = sendMessageSpy.getCall(4).args
+      expect(fifthSendMessage).to.deep.equal([
+        '99999999999',
+        'Any Name 7 falta Apenas 4 para sua vez!',
       ])
     })
   })
