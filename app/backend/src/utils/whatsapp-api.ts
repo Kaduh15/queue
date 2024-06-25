@@ -20,6 +20,8 @@ export const whatsappApi = {
       },
     })
 
-    return response.data
+    return response.data as unknown
   },
 }
+
+export type TWhatsappApi = typeof whatsappApi

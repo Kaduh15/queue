@@ -2,17 +2,23 @@ import { Status } from '@/entities/queue.entity'
 import { OpenRepository } from '@/repositories/open-repository/open.repository'
 import { QueueRepository } from '@/repositories/queue-repository/queue.repository'
 import { BadRequestError, NotFoundError } from '@/utils/http-errors'
-import { whatsappApi } from '@/utils/whatsapp-api'
+import { TWhatsappApi } from '@/utils/whatsapp-api'
 
 import { CreateQueueSchema } from '../../schemas/queue-create.schema'
 
 export class QueueService {
   model: QueueRepository
   openRepository: OpenRepository
+  whatsappApi: TWhatsappApi
 
-  constructor(model: QueueRepository, openRepository: OpenRepository) {
+  constructor(
+    model: QueueRepository,
+    openRepository: OpenRepository,
+    whatsappApi: TWhatsappApi,
+  ) {
     this.model = model
     this.openRepository = openRepository
+    this.whatsappApi = whatsappApi
   }
 
   async getToday() {
@@ -29,7 +35,7 @@ export class QueueService {
     const customer = await this.model.create(data)
 
     if (data.phoneNumber) {
-      whatsappApi.sendMessage(
+      this.whatsappApi.sendMessage(
         data.phoneNumber,
         `Olá ${data.name}, você está na fila!\nSua posição é: ${
           (await this.getToday()).length
@@ -68,12 +74,12 @@ export class QueueService {
         if (!customer.phoneNumber) return
 
         if (index === 0)
-          return whatsappApi.sendMessage(
+          return this.whatsappApi.sendMessage(
             customer.phoneNumber,
             `${customer.name}, Você é o próximo!`,
           )
 
-        return whatsappApi.sendMessage(
+        return this.whatsappApi.sendMessage(
           customer.phoneNumber,
           `${customer.name} falta Apenas ${index + 1} para sua vez!`,
         )
@@ -117,12 +123,12 @@ export class QueueService {
         if (!customer.phoneNumber) return
 
         if (index === 0)
-          return whatsappApi.sendMessage(
+          return this.whatsappApi.sendMessage(
             customer.phoneNumber,
             `${customer.name}, Você é o próximo!`,
           )
 
-        return whatsappApi.sendMessage(
+        return this.whatsappApi.sendMessage(
           customer.phoneNumber,
           `${customer.name} falta Apenas ${index} para sua vez!${
             index <= 3 && `\nPara não perder sua vez, venha para a Barbearia!`

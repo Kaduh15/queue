@@ -1,9 +1,11 @@
+import { Axios } from 'axios'
 import Sinon from 'sinon'
 import { beforeEach, describe, expect, it, test } from 'vitest'
 
 import Queue, { Status } from '@/entities/queue.entity'
 import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
 import { QueueRepositoryInMemory } from '@/repositories/queue-repository/queue-in-memory.repository'
+import { TWhatsappApi } from '@/utils/whatsapp-api'
 
 import { CreateQueueSchema } from '../../schemas/queue-create.schema'
 
@@ -12,7 +14,20 @@ import { QueueService } from './queue.service'
 describe('QueueService', () => {
   const queueRepository = new QueueRepositoryInMemory()
   const openRepository = new OpenRepositoryInMemory()
-  const queueService = new QueueService(queueRepository, openRepository)
+  const whatsappApiMock: TWhatsappApi = {
+    request: new Axios(),
+    sendMessage: async function (
+      _phoneNumber: string,
+      _message: string,
+    ): Promise<unknown> {
+      return {}
+    },
+  }
+  const queueService = new QueueService(
+    queueRepository,
+    openRepository,
+    whatsappApiMock,
+  )
 
   it('Should be defined', () => {
     expect(queueService).toBeDefined()
@@ -110,7 +125,7 @@ describe('QueueService', () => {
 
       const queueUpdate = await queueService.updateStatus(1, params)
 
-      expect(queueUpdate).toHaveProperty('status', params)
+      expect(queueUpdate.status).to.equal(params)
     })
   })
 })
