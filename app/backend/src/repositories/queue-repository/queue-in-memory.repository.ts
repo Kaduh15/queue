@@ -22,7 +22,9 @@ export class QueueRepositoryInMemory implements QueueRepository {
     return Promise.resolve(queueToday)
   }
 
-  create(data: Omit<Queue, 'id'>): Promise<Queue> {
+  create(
+    data: Omit<Queue, 'id' | 'status' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Queue> {
     const queueInService = this.queues.some(
       (queue) => queue.status === 'IN_SERVICE',
     )
@@ -37,8 +39,8 @@ export class QueueRepositoryInMemory implements QueueRepository {
     const newQueue = new Queue({
       ...data,
       id: this.index,
-      createdAt: data.createdAt || nowDate,
-      updatedAt: data.updatedAt || nowDate,
+      createdAt: nowDate,
+      updatedAt: nowDate,
       status,
     })
 

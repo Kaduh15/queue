@@ -1,15 +1,33 @@
 import { Axios } from 'axios'
 import Sinon from 'sinon'
-import { beforeEach, describe, expect, it, test } from 'vitest'
+import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 
 import Queue, { Status } from '@/entities/queue.entity'
 import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
 import { QueueRepositoryInMemory } from '@/repositories/queue-repository/queue-in-memory.repository'
+import { QueueRepository } from '@/repositories/queue-repository/queue.repository'
 import { TWhatsappApi } from '@/utils/whatsapp-api'
 
 import { CreateQueueSchema } from '../../schemas/queue-create.schema'
 
 import { QueueService } from './queue.service'
+
+async function seedQueueRepository({
+  repository,
+  quantity,
+}: {
+  repository: QueueRepository
+  quantity: number
+}) {
+  for (let i = 0; i < quantity; i++) {
+    vi.setSystemTime(new Date(new Date().setSeconds(i)))
+    await repository.create({
+      name: `Any Name ${i + 1}`,
+      phoneNumber: '99999999999',
+    })
+  }
+  vi.clearAllTimers()
+}
 
 describe('QueueService', () => {
   const queueRepository = new QueueRepositoryInMemory()
@@ -130,25 +148,16 @@ describe('QueueService', () => {
   })
 
   describe('next', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       Sinon.restore()
+      await queueRepository.deleteAll()
     })
 
     it('should update status to IN_SERVICE', async () => {
-      for (let i = 0; i < 10; i++) {
-        let status: Status = 'WAITING'
-        if (i === 0) {
-          status = 'IN_SERVICE'
-        }
-
-        await queueRepository.create({
-          name: `Any Name ${i + 1}`,
-          phoneNumber: '99999999999',
-          status,
-          createdAt: new Date(new Date().setSeconds(i)),
-          updatedAt: new Date(),
-        })
-      }
+      await seedQueueRepository({
+        repository: queueRepository,
+        quantity: 5,
+      })
 
       let customer = await queueService.next('DONE')
       let lastCustomerService = await queueRepository.getById(1)
@@ -173,6 +182,31 @@ describe('QueueService', () => {
       expect(customer?.status).to.equal('IN_SERVICE')
       expect(lastCustomerService?.status).to.equal('DONE')
       expect(nextCustomer?.status).to.equal('WAITING')
+    })
+
+    it('should send message to customers', async () => {
+      await seedQueueRepository({
+        repository: queueRepository,
+        quantity: 5,
+      })
+
+      const sendMessageSpy = Sinon.spy(whatsappApiMock, 'sendMessage')
+      expect(sendMessageSpy.callCount).to.equal(0)
+
+      await queueService.next('DONE')
+
+      expect(sendMessageSpy.callCount).to.equal(3)
+      const fistSendMessage = sendMessageSpy.getCall(0).args
+      expect(fistSendMessage).to.deep.equal([
+        '99999999999',
+        'Any Name 3, Você é o próximo!',
+      ])
+
+      const secondSendMessage = sendMessageSpy.getCall(1).args
+      expect(secondSendMessage).to.deep.equal([
+        '99999999999',
+        'Any Name 4 falta Apenas 1 para sua vez!\nPara não perder sua vez, venha para a Barbearia!',
+      ])
     })
   })
 })
