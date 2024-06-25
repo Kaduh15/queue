@@ -128,4 +128,51 @@ describe('QueueService', () => {
       expect(queueUpdate.status).to.equal(params)
     })
   })
+
+  describe('next', () => {
+    beforeEach(() => {
+      Sinon.restore()
+    })
+
+    it('should update status to IN_SERVICE', async () => {
+      for (let i = 0; i < 10; i++) {
+        let status: Status = 'WAITING'
+        if (i === 0) {
+          status = 'IN_SERVICE'
+        }
+
+        await queueRepository.create({
+          name: `Any Name ${i + 1}`,
+          phoneNumber: '99999999999',
+          status,
+          createdAt: new Date(new Date().setSeconds(i)),
+          updatedAt: new Date(),
+        })
+      }
+
+      let customer = await queueService.next('DONE')
+      let lastCustomerService = await queueRepository.getById(1)
+      let nextCustomer = await queueRepository.getById(3)
+      expect(customer?.id).to.equal(2)
+      expect(customer?.status).to.equal('IN_SERVICE')
+      expect(lastCustomerService?.status).to.equal('DONE')
+      expect(nextCustomer?.status).to.equal('WAITING')
+
+      customer = await queueService.next('DONE')
+      lastCustomerService = await queueRepository.getById(2)
+      nextCustomer = await queueRepository.getById(4)
+      expect(customer?.id).to.equal(3)
+      expect(customer?.status).to.equal('IN_SERVICE')
+      expect(lastCustomerService?.status).to.equal('DONE')
+      expect(nextCustomer?.status).to.equal('WAITING')
+
+      customer = await queueService.next('DONE')
+      lastCustomerService = await queueRepository.getById(3)
+      nextCustomer = await queueRepository.getById(5)
+      expect(customer?.id).to.equal(4)
+      expect(customer?.status).to.equal('IN_SERVICE')
+      expect(lastCustomerService?.status).to.equal('DONE')
+      expect(nextCustomer?.status).to.equal('WAITING')
+    })
+  })
 })

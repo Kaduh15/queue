@@ -1,4 +1,4 @@
-import Queue from '@/entities/queue.entity'
+import Queue, { Status } from '@/entities/queue.entity'
 import { NotFoundError } from '@/utils/http-errors'
 
 import { QueueRepository } from './queue.repository'
@@ -23,14 +23,23 @@ export class QueueRepositoryInMemory implements QueueRepository {
   }
 
   create(data: Omit<Queue, 'id'>): Promise<Queue> {
+    const queueInService = this.queues.some(
+      (queue) => queue.status === 'IN_SERVICE',
+    )
+
+    let status: Status = 'WAITING'
+    if (!queueInService) {
+      status = 'IN_SERVICE'
+    }
+
     const nowDate = new Date()
 
     const newQueue = new Queue({
       ...data,
       id: this.index,
-      createdAt: nowDate,
-      updatedAt: nowDate,
-      status: 'WAITING',
+      createdAt: data.createdAt || nowDate,
+      updatedAt: data.updatedAt || nowDate,
+      status,
     })
 
     this.queues.push(newQueue)
