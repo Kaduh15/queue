@@ -13,8 +13,8 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start gap-4">
-      <Header />
-      {token && <NextClientButton>Proximo</NextClientButton>}
+      <Header isOpen={isOpen}/>
+      {token && isOpen && <NextClientButton>Proximo</NextClientButton>}
       {isOpen && <CardQueue />}
       {!isOpen && <h1>Estabelecimento Fechado</h1>}
     </main>

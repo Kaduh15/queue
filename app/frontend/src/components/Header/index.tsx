@@ -5,8 +5,15 @@ import DialogLogin from '../DialogLogin'
 import { cookies } from 'next/headers'
 import ButtonLogout from '../ButtonLogout'
 import Link from 'next/link'
+import { OpenQueueSwitch } from '../OpenQueueSwitch'
 
-export default function Header() {
+type HeaderProps = {
+  isOpen?: boolean
+}
+
+export default function Header({
+  isOpen = false,
+}: HeaderProps) {
   const token = cookies().has('token')
 
   return (
@@ -25,6 +32,7 @@ export default function Header() {
           <h2 className="text-bold text-3xl">Menu</h2>
           {!token && <DialogLogin />}
           {token && <Link href="/settings">Configurações</Link>}
+          {token && <OpenQueueSwitch isOpen={isOpen} />}
           {token && <ButtonLogout />}
           <ModeToggle />
         </SheetContent>
