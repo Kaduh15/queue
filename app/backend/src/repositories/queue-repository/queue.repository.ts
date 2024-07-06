@@ -7,4 +7,5 @@ export interface QueueRepository extends BaseRepository<Queue> {
     data: Omit<Queue, 'id' | 'status' | 'createdAt' | 'updatedAt'>,
   ): Promise<Queue>
   getToday(): Promise<Queue[]>
+  getTodayByName(name: string): Promise<Queue | undefined>
 }

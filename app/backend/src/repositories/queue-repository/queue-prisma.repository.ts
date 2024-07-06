@@ -5,6 +5,22 @@ import { ConflictError } from '@/utils/http-errors'
 import { QueueRepository } from './queue.repository'
 
 export class QueuePrismaRepository implements QueueRepository {
+  async getTodayByName(name: string): Promise<Queue | undefined> {
+    const customer = await prisma.queue.findFirst({
+      where: {
+        name,
+        createdAt: {
+          gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          lte: new Date(new Date().setHours(23, 59, 59, 999)),
+        },
+      },
+    })
+
+    if (!customer) return undefined
+
+    return new Queue(customer)
+  }
+
   async getToday(): Promise<Queue[]> {
     const queueToday = await prisma.queue.findMany({
       where: {

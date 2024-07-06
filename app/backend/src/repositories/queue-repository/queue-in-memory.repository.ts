@@ -4,6 +4,10 @@ import { NotFoundError } from '@/utils/http-errors'
 import { QueueRepository } from './queue.repository'
 
 export class QueueRepositoryInMemory implements QueueRepository {
+  getTodayByName(_name: string): Promise<Queue | undefined> {
+    throw new Error('Method not implemented.')
+  }
+
   private queues: Queue[] = []
   private index = 1
 
