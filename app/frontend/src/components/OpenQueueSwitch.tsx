@@ -3,14 +3,13 @@
 import { Switch } from '@/components/ui/switch'
 import { handleOpenQueue } from '../actions/handleOpenQueue'
 import { Label } from './ui/label'
-import { useEffect, useId } from 'react'
+import { useId } from 'react'
 
 type OpenQueueSwitchProps = {
   isOpen: boolean
 }
 
 export function OpenQueueSwitch({ isOpen = false }: OpenQueueSwitchProps) {
-  console.log("🚀 ~ OpenQueueSwitch ~ isOpen:", isOpen)
   const id = useId()
 
   return (

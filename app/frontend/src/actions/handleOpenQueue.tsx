@@ -13,7 +13,6 @@ export async function handleOpenQueue() {
       Authorization: `Bearer ${token}`,
     },
   }).then((res) => res.json())
-  console.log('🚀 ~ handleOpenQueue ~ result', result)
 
   revalidatePath('/')
 }
