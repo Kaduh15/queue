@@ -27,9 +27,7 @@ export class PaymentService {
       throw new BadRequestError("it's closed")
     }
 
-    const hasCustomer = (await this.#queue.getToday()).some((customer) => {
-      return customer.name === name
-    })
+    const hasCustomer = (await this.#queue.getTodayByName(name)) !== undefined
 
     if (hasCustomer) {
       throw new BadRequestError('Customer already paid')
