@@ -4,12 +4,23 @@ import { NotFoundError } from '@/utils/http-errors'
 import { QueueRepository } from './queue.repository'
 
 export class QueueRepositoryInMemory implements QueueRepository {
-  getTodayByName(_name: string): Promise<Queue | undefined> {
-    throw new Error('Method not implemented.')
-  }
-
   private queues: Queue[] = []
   private index = 1
+
+  getTodayByName(_name: string): Promise<Queue | undefined> {
+    const queueToday = this.queues.find((queue) => {
+      const today = new Date()
+      const queueDate = new Date(queue.createdAt)
+
+      return (
+        queueDate.getDate() === today.getDate() &&
+        queueDate.getMonth() === today.getMonth() &&
+        queueDate.getFullYear() === today.getFullYear()
+      )
+    })
+
+    return Promise.resolve(queueToday)
+  }
 
   getToday(): Promise<Queue[]> {
     const queueToday = this.queues.filter((queue) => {
