@@ -24,11 +24,17 @@ export default function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<LoginForm>({
     resolver: zodResolver(loginFormSchema),
   })
 
-  const onSubmit = handleSubmit((data) => handleSingIn(JSON.stringify(data)))
+  const onSubmit = handleSubmit((data) => handleSingIn(JSON.stringify(data)).catch(() => {
+    setError('password', {
+      type: 'manual',
+      message: 'Email ou senha inválidos',
+    })
+  }))
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
