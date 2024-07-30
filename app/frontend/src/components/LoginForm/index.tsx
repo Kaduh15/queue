@@ -29,12 +29,14 @@ export default function LoginForm() {
     resolver: zodResolver(loginFormSchema),
   })
 
-  const onSubmit = handleSubmit((data) => handleSingIn(JSON.stringify(data)).catch(() => {
-    setError('password', {
-      type: 'manual',
-      message: 'Email ou senha inválidos',
-    })
-  }))
+  const onSubmit = handleSubmit((data) =>
+    handleSingIn(JSON.stringify(data)).catch(() => {
+      setError('password', {
+        type: 'manual',
+        message: 'Email ou senha inválidos',
+      })
+    }),
+  )
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">

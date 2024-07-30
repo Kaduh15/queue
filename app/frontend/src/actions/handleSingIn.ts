@@ -14,7 +14,7 @@ export async function handleSingIn(dataForm: string) {
     body: dataForm,
   })
 
-  if(!result.ok) {
+  if (!result.ok) {
     cookies().set('token', '', {
       path: '/',
       maxAge: 0,
@@ -22,7 +22,6 @@ export async function handleSingIn(dataForm: string) {
     })
     throw new Error('Falha ao realizar login')
   }
-
 
   const data = await result.json()
 
