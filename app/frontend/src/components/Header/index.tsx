@@ -11,9 +11,7 @@ type HeaderProps = {
   isOpen?: boolean
 }
 
-export default function Header({
-  isOpen = false,
-}: HeaderProps) {
+export default function Header({ isOpen = false }: HeaderProps) {
   const token = cookies().has('token')
 
   return (

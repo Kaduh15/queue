@@ -6,7 +6,7 @@ import { cookies } from 'next/headers'
 export async function handleOpenQueue() {
   const token = cookies().get('token')?.value
 
-  const result = await fetch(process.env.API_URL + '/open', {
+  await fetch(process.env.API_URL + '/open', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

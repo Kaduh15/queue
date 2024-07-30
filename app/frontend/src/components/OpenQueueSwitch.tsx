@@ -18,6 +18,6 @@ export function OpenQueueSwitch({ isOpen = false }: OpenQueueSwitchProps) {
         Abrir Fila
       </Label>
       <Switch checked={isOpen} id={id} onCheckedChange={handleOpenQueue} />
-    </div> 
+    </div>
   )
 }
