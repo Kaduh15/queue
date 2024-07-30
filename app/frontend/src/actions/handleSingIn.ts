@@ -4,6 +4,8 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 export async function handleSingIn(dataForm: string) {
+  const oneDayInSeconds = 3600 * 24
+
   const result = await fetch(process.env.API_URL + '/login', {
     method: 'POST',
     headers: {
@@ -13,6 +15,11 @@ export async function handleSingIn(dataForm: string) {
   })
 
   if(!result.ok) {
+    cookies().set('token', '', {
+      path: '/',
+      maxAge: 0,
+      httpOnly: true,
+    })
     throw new Error('Falha ao realizar login')
   }
 
@@ -21,7 +28,7 @@ export async function handleSingIn(dataForm: string) {
 
   cookies().set('token', data.token, {
     path: '/',
-    maxAge: 3600 * 24, // Expires after 24hr
+    maxAge: oneDayInSeconds,
     httpOnly: true,
   })
 
