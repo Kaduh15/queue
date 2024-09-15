@@ -32,7 +32,7 @@ export class UserPrismaRepository implements UserRepository {
   async getAll(): Promise<User[]> {
     const users = await prisma.user.findMany()
 
-    return users.map((user) => new User(user))
+    return users.map((user: User) => new User(user))
   }
 
   getById(_id: number): Promise<User> {

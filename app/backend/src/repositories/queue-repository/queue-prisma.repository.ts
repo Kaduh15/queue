@@ -34,7 +34,7 @@ export class QueuePrismaRepository implements QueueRepository {
       },
     })
 
-    return queueToday.map((queue) => new Queue(queue))
+    return queueToday.map((queue: Queue) => new Queue(queue))
   }
 
   async create(
@@ -71,7 +71,7 @@ export class QueuePrismaRepository implements QueueRepository {
   async getAll(): Promise<Queue[]> {
     const customers = await prisma.queue.findMany()
 
-    return customers.map((customer) => new Queue(customer))
+    return customers.map((customer: Queue) => new Queue(customer))
   }
 
   async getById(id: number): Promise<Queue | undefined> {

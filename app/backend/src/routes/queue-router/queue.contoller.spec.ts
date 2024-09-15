@@ -1,3 +1,4 @@
+import { Axios } from 'axios'
 import { Request, Response } from 'express'
 import Sinon from 'sinon'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -5,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Queue from '@/entities/queue.entity'
 import { OpenRepositoryInMemory } from '@/repositories/open-repository/open-in-memory.repository'
 import { QueueRepositoryInMemory } from '@/repositories/queue-repository/queue-in-memory.repository'
+import { TWhatsappApi } from '@/utils/whatsapp-api'
 
 import { CreateQueueSchema } from '../../schemas/queue-create.schema'
 
@@ -14,7 +16,20 @@ import { QueueService } from './queue.service'
 describe('QueueController', () => {
   const queueRepository = new QueueRepositoryInMemory()
   const openRepository = new OpenRepositoryInMemory()
-  const queueService = new QueueService(queueRepository, openRepository)
+  const whatsappApiMock: TWhatsappApi = {
+    request: new Axios(),
+    sendMessage: async function (
+      _phoneNumber: string,
+      _message: string,
+    ): Promise<unknown> {
+      return {}
+    },
+  }
+  const queueService = new QueueService(
+    queueRepository,
+    openRepository,
+    whatsappApiMock,
+  )
   const queueController = new QueueController(queueService)
 
   const req = {
