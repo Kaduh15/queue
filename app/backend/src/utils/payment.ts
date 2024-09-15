@@ -1,8 +1,7 @@
-import { configDotenv } from 'dotenv'
 import MercadoPagoConfig, { Payment } from 'mercadopago'
 import { z } from 'zod'
 
-configDotenv()
+import { env } from '@/config/env'
 
 type Body = {
   payment_method_id?: string
@@ -54,7 +53,7 @@ export default class PaymentApi {
 
   constructor() {
     const client = new MercadoPagoConfig({
-      accessToken: process.env.MP_ACCESS_TOKEN || '',
+      accessToken: env.MP_ACCESS_TOKEN || '',
     })
     this.#payment = new Payment(client)
   }
@@ -71,7 +70,7 @@ export default class PaymentApi {
         name: '',
         phone_number: '',
       },
-      notification_url: `${process.env.THIS_URL}/payment/webhook`,
+      notification_url: `${env.DEPLOY_URL}/payment/webhook`,
       ...body,
     }
 

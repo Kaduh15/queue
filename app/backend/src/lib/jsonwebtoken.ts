@@ -1,14 +1,13 @@
-import dotenv from 'dotenv'
-import jwt, { JwtPayload, Secret } from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
-dotenv.config()
+import { env } from '@/config/env'
 
 type AuthPayload<PayloadType = Record<string, unknown>> = PayloadType &
   JwtPayload
 
 export class Auth {
-  private static readonly secret = process.env.JWT_SECRET as Secret
-  private static readonly expiresIn = process.env.JWT_EXPIRES_IN
+  private static readonly secret = env.JWT_SECRET
+  private static readonly expiresIn = env.JWT_EXPIRES_IN
   private static jwt = jwt
 
   static sign(payload: object | string, expiresIn: string | number = '1d') {

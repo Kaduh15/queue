@@ -12,8 +12,6 @@ import {
   userRouter,
 } from './routes'
 
-import 'dotenv/config'
-
 class App {
   public app: express.Express
 

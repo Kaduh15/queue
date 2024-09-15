@@ -1,10 +1,10 @@
 import { Axios } from 'axios'
 
-import 'dotenv/config'
+import { env } from '@/config/env'
 
 export const whatsappApi = {
   request: new Axios({
-    baseURL: process.env.WHATSAPP_API_URL,
+    baseURL: env.WHATSAPP_API_URL,
   }),
 
   async sendMessage(phoneNumber: string, message: string) {

@@ -1,7 +1,7 @@
 import { App } from './app'
-import 'dotenv/config'
+import { env } from './config/env'
 
-const PORT = process.env.PORT
+const PORT = env.PORT
 
 if (PORT) {
   new App().start(PORT)
