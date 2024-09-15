@@ -6,13 +6,14 @@ services:
       context: ./app/frontend
       dockerfile: Dockerfile.dev
     ports:
-      - ${WEB_PORT:-3000}:3000
+      - ${WEB_PORT:-3000}:${WEB_PORT:-3000}
     volumes:
       - ./app/frontend/src:/app-frontend/src
     depends_on:
       - api
       - whatsapp-api
     environment:
+      - PORT=${WEB_PORT:-3000}
       - API_URL=${API_URL:-http://api:3001}
       - NEXT_PUBLIC_WHATSAPP_API=${WHATSAPP_API_URL:-http://whatsapp-api:3002}
     healthcheck:
@@ -31,16 +32,16 @@ services:
     volumes:
       - ./app/backend/src:/app-backend/src
     ports:
-      - ${API_PORT:-3001}:3001
+      - ${API_PORT:-3001}:${API_PORT:-3001}
     command: sh -c "npm run db:generate && npm run db:migrate && npm run db:seed && npm run dev"
     depends_on:
       db:
         condition: service_healthy
     environment:
-      - PORT=3001
+      - PORT=${API_PORT:-3001}
       - DATABASE_URL=${DATABASE_URL:-postgres://${POSTGRES_USER:-docker}:${POSTGRES_PASSWORD:-docker}@db:5432/${POSTGRES_DB:-queue-dev}}
-      - JWT_SECRET=SENHACECRETA
-      - JWT_EXPIRES_IN=1d
+      - JWT_SECRET=${JWT_SECRET:-SENHACECRETA}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-1d}
       - WHATSAPP_API_URL=${WHATSAPP_API_URL:-http://whatsapp-api:3002}
       - DEPLOY_URL=${DEPLOY_URL}
       - MP_ACCESS_TOKEN=${MP_ACCESS_TOKEN}
@@ -58,12 +59,12 @@ services:
       context: ./app/whatsapp-api
       dockerfile: Dockerfile.dev
     ports:
-      - ${WA_PORT:-3002}:3002
+      - ${WA_PORT:-3002}:${WA_PORT:-3002}
     volumes:
       - ./app/whatsapp-api/src:/app-whatsapp-api/src
       - ./app/whatsapp-api/tokens:/app-whatsapp-api/tokens
     environment:
-      - PORT=3002
+      - PORT=${WA_PORT:-3002}
     healthcheck:
       test: [ "CMD", "lsof", "-t", "-i:3002" ]
       timeout: 10s
