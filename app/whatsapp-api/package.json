@@ -29,7 +29,6 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.4.0",
     "boom": "^7.3.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -39,6 +38,7 @@
     "pino-http": "^8.4.0",
     "pino-pretty": "^10.2.0",
     "qrcode": "^1.5.3",
-    "qrcode-terminal": "^0.12.0"
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.25.0"
   }
 }

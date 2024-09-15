@@ -13,7 +13,7 @@ whatsappRouter.get('/event/login', async (req, res) => {
     eventServer.sendEvent(event, { connected: true }, res)
   }
 
-  const { qrCode } = await client.getQRCode()
+  const qrCode = await client.getQRCode()
 
   eventServer.sendEvent(event, { qrCode }, res)
   return eventServer.finishEvent(res)
@@ -36,7 +36,12 @@ whatsappRouter.get('/send', async (req, res) => {
 
   const msg = await client.sendMessage(phone as string, text as string)
 
-  return res.status(200).json(msg)
+  return res.status(200).json({
+    success: true,
+    message: msg.body,
+    from: msg.from,
+    to: msg.to,
+  })
 })
 
 export { whatsappRouter }

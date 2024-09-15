@@ -19,18 +19,6 @@ class App {
   }
 
   private config(): void {
-    // const logger = pino({
-    //   level: 'info',
-    //   transport: {
-    //     target: 'pino-pretty',
-    //     options: {
-    //       colorize: true,
-    //     },
-    //   }
-    // })
-
-    // this.app.use(logger)
-
     this.app.use(cors())
     this.app.use(express.json())
   }

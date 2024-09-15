@@ -6,8 +6,6 @@ const PORT = process.env.PORT
 
 const client = new WhatsappInstance()
 
-client.init()
-
 export { client }
 
 async function main() {

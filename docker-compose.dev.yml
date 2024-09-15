@@ -31,13 +31,13 @@ services:
     volumes:
       - ./app/backend/src:/app-backend/src
     ports:
-      - ${API_PORT:-3001}:3000
+      - ${API_PORT:-3001}:3001
     command: sh -c "npm run db:generate && npm run db:migrate && npm run db:seed && npm run dev"
     depends_on:
       db:
         condition: service_healthy
     environment:
-      - PORT=3000
+      - PORT=3001
       - DATABASE_URL=${DATABASE_URL:-postgres://${POSTGRES_USER:-docker}:${POSTGRES_PASSWORD:-docker}@db:5432/${POSTGRES_DB:-queue-dev}}
       - JWT_SECRET=SENHACECRETA
       - JWT_EXPIRES_IN=1d
@@ -45,7 +45,7 @@ services:
       - DEPLOY_URL=${DEPLOY_URL}
       - MP_ACCESS_TOKEN=${MP_ACCESS_TOKEN}
     healthcheck:
-      test: [ "CMD", "lsof", "-t", "-i:3000" ]
+      test: [ "CMD", "lsof", "-t", "-i:3001" ]
       timeout: 10s
       retries: 5
     restart: unless-stopped
@@ -58,14 +58,14 @@ services:
       context: ./app/whatsapp-api
       dockerfile: Dockerfile.dev
     ports:
-      - ${WA_PORT:-3002}:3000
-    command: sh -c "npm run dev"
+      - ${WA_PORT:-3002}:3002
     volumes:
       - ./app/whatsapp-api/src:/app-whatsapp-api/src
+      - ./app/whatsapp-api/tokens:/app-whatsapp-api/tokens
     environment:
-      - PORT=3000
+      - PORT=3002
     healthcheck:
-      test: [ "CMD", "lsof", "-t", "-i:3000" ]
+      test: [ "CMD", "lsof", "-t", "-i:3002" ]
       timeout: 10s
       retries: 5
     networks:
