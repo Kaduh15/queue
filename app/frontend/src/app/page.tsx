@@ -9,7 +9,8 @@ export default async function Home() {
 
   const { isOpen } = await fetch(process.env.API_URL + '/open', {
     method: 'GET',
-  }).then((res) => res.json())
+  })
+    .then((res) => res.json())
     .catch((err) => {
       console.error(err)
       return { isOpen: false }
