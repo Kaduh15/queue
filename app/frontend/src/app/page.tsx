@@ -10,6 +10,10 @@ export default async function Home() {
   const { isOpen } = await fetch(process.env.API_URL + '/open', {
     method: 'GET',
   }).then((res) => res.json())
+    .catch((err) => {
+      console.error(err)
+      return { isOpen: false }
+    })
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start gap-4">
