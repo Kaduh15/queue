@@ -1,102 +1,100 @@
 version: '3.9'
 services:
-  frontend:
-    container_name: frontend
-    build: 
+  web:
+    container_name: web
+    build:
       context: ./app/frontend
       dockerfile: Dockerfile.dev
     ports:
-      - 3000:3000
-    volumes: 
+      - ${WEB_PORT:-3000}:3000
+    volumes:
       - ./app/frontend/src:/app-frontend/src
     depends_on:
-      - backend
+      - api
       - whatsapp-api
     environment:
-      - API_URL=http://backend:3001
-      - NEXT_PUBLIC_WHATSAPP_API=http://whatsapp-api:3002
-    # Os `healthcheck` devem garantir que a aplicação
-    # está operacional, antes de liberar o container
+      - API_URL=${API_URL:-http://api:3001}
+      - NEXT_PUBLIC_WHATSAPP_API=${WHATSAPP_API_URL:-http://whatsapp-api:3002}
     healthcheck:
-      test: ["CMD", "lsof", "-t", "-i:3001"]  # Caso utilize outra porta interna para o front, altere ela aqui também
+      test: [ "CMD", "lsof", "-t", "-i:3000" ]
       timeout: 10s
       retries: 5
+    restart: unless-stopped
     networks:
       - app-network
 
-  backend:
-    container_name: backend
-    build: 
+  api:
+    container_name: api
+    build:
       context: ./app/backend
       dockerfile: Dockerfile.dev
-    volumes: 
+    volumes:
       - ./app/backend/src:/app-backend/src
     ports:
-      - 3001:3001
-    command: sh -c "npm run db:generate && npm run db:migrate && npm run dev"
+      - ${API_PORT:-3001}:3000
+    command: sh -c "npm run db:generate && npm run db:migrate && npm run db:seed && npm run dev"
     depends_on:
-      - db
-    env_file:
-      - ./app/backend/.env
+      db:
+        condition: service_healthy
+    environment:
+      - PORT=3000
+      - DATABASE_URL=${DATABASE_URL:-postgres://${POSTGRES_USER:-docker}:${POSTGRES_PASSWORD:-docker}@db:5432/${POSTGRES_DB:-queue-dev}}
+      - JWT_SECRET=SENHACECRETA
+      - JWT_EXPIRES_IN=1d
+      - WHATSAPP_API_URL=${WHATSAPP_API_URL:-http://whatsapp-api:3002}
+      - DEPLOY_URL=${DEPLOY_URL}
+      - MP_ACCESS_TOKEN=${MP_ACCESS_TOKEN}
     healthcheck:
-      test: ["CMD", "lsof", "-t", "-i:3001"] # Caso utilize outra porta interna para o back, altere ela aqui também
+      test: [ "CMD", "lsof", "-t", "-i:3000" ]
       timeout: 10s
       retries: 5
-    restart: always
+    restart: unless-stopped
     networks:
       - app-network
 
   whatsapp-api:
     container_name: whatsapp-api
-    build: 
+    build:
       context: ./app/whatsapp-api
       dockerfile: Dockerfile.dev
     ports:
-      - 3002:3002
+      - ${WA_PORT:-3002}:3000
     command: sh -c "npm run dev"
-    volumes: 
+    volumes:
       - ./app/whatsapp-api/src:/app-whatsapp-api/src
     environment:
-      - PORT=3002
+      - PORT=3000
     healthcheck:
-      test: ["CMD", "lsof", "-t", "-i:3002"] # Caso utilize outra porta interna para o back, altere ela aqui também
-      timeout: 10s
-      retries: 5
-    networks:
-      - app-network
-
-  db-studio:
-    container_name: db-studio
-    build: 
-      context: ./app/backend
-      dockerfile: Dockerfile.dev
-    ports:
-      - 5555:5555
-    working_dir: /app-backend
-    command: sh -c "npm run db:studio"
-    depends_on:
-      - backend
-    environment:
-      - DATABASE_URL=postgres://root:root@db:5432/queue-dev
-    healthcheck:
-      test: ["CMD", "lsof", "-t", "-i:5555"] # Caso utilize outra porta interna para o back, altere ela aqui também
+      test: [ "CMD", "lsof", "-t", "-i:3000" ]
       timeout: 10s
       retries: 5
     networks:
       - app-network
 
   db:
-    image: postgres:latest
+    image: bitnami/postgresql:13.16.0
     container_name: db
-    platform: linux/x86_64
     ports:
       - 5432:5432/tcp
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-    restart: always
+      - POSTGRES_USER=${POSTGRES_USER:-docker}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-docker}
+      - POSTGRES_DB=${POSTGRES_DB:-queue-dev}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U docker" ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
     networks:
-      - app-network 
+      - app-network
+
+volumes:
+  db-data:
+
 
 networks:
   app-network:

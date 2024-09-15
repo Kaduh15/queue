@@ -6,8 +6,8 @@
   "scripts": {
     "compose:down:dev": "docker-compose -f docker-compose.dev.yml down",
     "compose:down": "docker-compose -f docker-compose.yml down",
-    "compose:up:dev": "docker-compose -f docker-compose.dev.yml up -d --build",
-    "compose:up": "docker-compose -f docker-compose.yml up -d --build",
+    "compose:up:dev": "docker-compose -f docker-compose.dev.yml up -d --build --remove-orphans",
+    "compose:up": "docker-compose -f docker-compose.yml up -d --build --build --remove-orphans",
     "copy:env:back": "cd ./app/backend && cp .env.example .env",
     "db:docker:up": "docker run -d --name db-pg -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -p 5432:5432 postgres:latest",
     "install:back": "cd ./app/backend && npm install",
