@@ -3,7 +3,7 @@ import { Router } from 'express'
 import { eventServer } from '../helps/events'
 import { client } from '../server'
 
-const whatsappRouter = Router()
+const whatsappRouter: Router = Router()
 
 whatsappRouter.get('/event/login', async (req, res) => {
   const event = 'login'
