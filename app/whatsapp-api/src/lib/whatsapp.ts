@@ -23,9 +23,12 @@ export default class WhatsappInstance {
       `tokens/${pathAuthFile}`,
     )
 
+    const logger: pino.Logger = pino({ level: 'silent' })
+
     this.sock = makeWASocket({
       auth: state,
-      logger: pino({ level: 'silent' }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      logger: logger as any,
     })
 
     this.setupEventHandlers(saveCreds)

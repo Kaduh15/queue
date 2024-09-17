@@ -7,38 +7,6 @@ WORKDIR /app-whatsapp-api
 # Instale pnpm globalmente
 RUN npm install -g pnpm
 
-# Instale pacotes de sistema necessários para o Puppeteer e o Chromium
-RUN apt-get update && \
-  apt-get install -y \
-  gconf-service \
-  libasound2 \
-  libatk-bridge2.0-0 \
-  libatk1.0-0 \
-  libcups2 \
-  libdbus-1-3 \
-  libexpat1 \
-  libfontconfig1 \
-  libgdk-pixbuf2.0-0 \
-  libnspr4 \
-  libnss3 \
-  libx11-xcb1 \
-  libxcomposite1 \
-  libxdamage1 \
-  libxrandr2 \
-  libxss1 \
-  libxtst6 \
-  libdrm2 \
-  libgbm-dev \
-  ca-certificates \
-  fonts-liberation \
-  libappindicator3-1 \
-  libu2f-udev \
-  libpci3 \
-  libnss3 \
-  libnss3-tools \
-  wget \
-  && rm -rf /var/lib/apt/lists/*
-
 # Copie o package.json e o pnpm-lock.yaml (se existir)
 COPY package.json ./
 
