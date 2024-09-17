@@ -2,7 +2,7 @@
 .env*
 .git
 tokens
-Dockerfile
+Dockerfile*
 .wwebjs_cache
 auth
 node_modules

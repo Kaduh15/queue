@@ -3,6 +3,7 @@ import express from 'express'
 
 import 'express-async-errors'
 
+import WhatsappInstance from './lib/whatsapp'
 import errorMiddleware from './middlewares/error.middleware'
 import { whatsappRouter } from './routes/whatsapp.router'
 
@@ -11,7 +12,7 @@ import 'dotenv/config'
 class App {
   public app: express.Express
 
-  constructor() {
+  constructor(private readonly client: WhatsappInstance) {
     this.app = express()
 
     this.config()
@@ -21,6 +22,13 @@ class App {
   private config(): void {
     this.app.use(cors())
     this.app.use(express.json())
+    this.app.use((req, res, next) => {
+      if (!this.client) {
+        return res.status(500).json({ error: 'Client not initialized' })
+      }
+      req.client = this.client
+      next()
+    })
   }
 
   private routes(): void {
@@ -39,6 +47,3 @@ class App {
 }
 
 export { App }
-
-// A execução dos testes de cobertura depende dessa exportação
-export const { app } = new App()
