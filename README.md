@@ -95,6 +95,8 @@ Siga os seguintes passos para configurar e executar o projeto usando Docker e Do
 
    Abra seu navegador e vá para `http://localhost:3000`
 
+   Por padrão é craido um usario com email `admin@admin.com` e senha `@admin`, pode usar para testar aplicação.
+
 Caso deseje utilizar o pagamento online, siga as instruções detalhadas em [Pagemento via PIX](PGAMENTO-PIX.md).
 
 ## Licença 📜
